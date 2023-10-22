@@ -1,0 +1,5 @@
+# YOLOv5 Dataset files
+/datasets/*
+
+# IDE folders
+.idea
