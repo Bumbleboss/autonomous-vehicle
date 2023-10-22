@@ -1,0 +1,8 @@
+path: ../udacity-self-driving
+
+train: autosplit_train.txt
+val: autosplit_val.txt
+test: autosplit_test.txt
+
+nc: 11
+names: ['biker', 'car', 'pedestrian', 'trafficLight', 'trafficLight-Green', 'trafficLight-GreenLeft', 'trafficLight-Red', 'trafficLight-RedLeft', 'trafficLight-Yellow', 'trafficLight-YellowLeft', 'truck']
