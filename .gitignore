@@ -2,9 +2,5 @@
 /datasets/*/images/*
 /datasets/*/labels/*
 
-# Publish specific files for demonstration purposes
-!/datasets/udacity-self-driving/images/sample-image.jpg
-!/datasets/udacity-self-driving/labels/sample-image.txt
-
 # IDE folders
 .idea
