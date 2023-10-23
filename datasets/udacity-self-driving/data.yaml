@@ -1,4 +1,4 @@
-path: ./udacity-self-driving
+path: /content/autonomous-vehicle/datasets/udacity-self-driving
 
 train: autosplit_train.txt
 val: autosplit_val.txt
