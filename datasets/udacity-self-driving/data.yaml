@@ -1,4 +1,4 @@
-path: ./
+path: ./udacity-self-driving
 
 train: autosplit_train.txt
 val: autosplit_val.txt
