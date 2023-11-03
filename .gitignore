@@ -1,6 +1,0 @@
-# YOLO Dataset files
-/datasets/*/images/*
-/datasets/*/labels/*
-
-# IDE folders
-.idea
