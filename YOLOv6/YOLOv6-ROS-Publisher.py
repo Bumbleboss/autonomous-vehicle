@@ -140,6 +140,21 @@ def main():
 
                 # Extract object detection results and spatial coordinates
                 detections = inDet.detections
+                # Define a dictionary that maps labels to colors (BGR format)
+                label_to_color = {
+                    "biker"                  : (204,0,102),  # Purble
+                    "car"                    : (0,14, 255),  # Orange
+                    "pedestrian"             : (0, 0, 102),  # Wine Red
+                    "trafficLight"           : (153,255,204),# Lime
+                    "trafficLight-Green"     : (0, 255, 0),  # Green
+                    "trafficLight-GreenLeft" : (0, 255, 0),  # Green
+                    "trafficLight-Red"       : (0, 0, 255),  # Red
+                    "trafficLight-RedLeft"   : (0, 0, 255),  # Red
+                    "trafficLight-Yellow"    : (0,255,255),  # Yellow
+                    "trafficLight-YellowLeft": (0,255,255),  # Yellow
+                    "truck"                  : (127,0,255),  # Pink
+
+                }
                 for detection in detections:
                     spatial_coordinates = detection.spatialCoordinates
 
@@ -154,14 +169,43 @@ def main():
                     except:
                         label = detection.label
 
-                    # Draw detected objects box
-                    cv2.putText(frame, str(label), (x1 + 10, y1 + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
-                    cv2.putText(frame, "{:.2f}".format(detection.confidence*100), (x1 + 10, y1 + 35), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
-                    cv2.putText(frame, f"X: {int(detection.spatialCoordinates.x)} mm", (x1 + 10, y1 + 50), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
-                    cv2.putText(frame, f"Y: {int(detection.spatialCoordinates.y)} mm", (x1 + 10, y1 + 65), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
-                    cv2.putText(frame, f"Z: {int(detection.spatialCoordinates.z)} mm", (x1 + 10, y1 + 80), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
+                    # Customize the box color
+                    box_color = label_to_color.get(label, (255, 255, 255))  # Default to white for unknown labels
 
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), color, cv2.FONT_HERSHEY_SIMPLEX)
+                    # Draw a thicker bounding box
+                    box_thickness = 2
+
+                    # Draw the bounding box
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, box_thickness)
+
+                    # Customize the font size and color for labels
+                    font_size = 0.7
+                    label_color = (255, 255, 255)
+
+                    # Draw label text
+                    label_text = f"{label}: {int(detection.confidence * 100)}%"
+
+                    label_position = (x1 + 5, y1 - 10)  # Adjust the label position
+                    cv2.putText(frame, label_text, label_position, cv2.FONT_HERSHEY_SIMPLEX, font_size, label_color, 1, cv2.LINE_AA)
+
+                    # Customize the font size and color for spatial coordinates
+                    font_size = 0.5
+                    coordinates_color = (255, 255, 255)
+
+                    # Draw spatial coordinates
+                    x_text = f"X: {int(spatial_coordinates.x)} mm"
+                    y_text = f"Y: {int(spatial_coordinates.y)} mm"
+                    z_text = f"Z: {int(spatial_coordinates.z)} mm"
+
+                    x_position = x1 + 5
+                    y_position = y2 - 5  # Adjust the Y position
+                    cv2.putText(frame, x_text, (x_position, y_position), cv2.FONT_HERSHEY_SIMPLEX, font_size, coordinates_color, 1, cv2.LINE_AA)
+
+                    y_position += 20  # Increase the Y position
+                    cv2.putText(frame, y_text, (x_position, y_position), cv2.FONT_HERSHEY_SIMPLEX, font_size, coordinates_color, 1, cv2.LINE_AA)
+
+                    y_position += 20  # Increase the Y position
+                    cv2.putText(frame, z_text, (x_position, y_position), cv2.FONT_HERSHEY_SIMPLEX, font_size, coordinates_color, 1, cv2.LINE_AA)
 
                     # Create a Point message to publish the spatial coordinates
                     point_msg = Point()
