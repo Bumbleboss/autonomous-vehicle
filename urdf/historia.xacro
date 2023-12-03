@@ -1,0 +1,1256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  xmlns:xacro="http://www.ros.org/wiki/xacro" name="historia">
+
+
+<!-- Import all Gazebo-customization elements-->
+  <xacro:include filename="$(find historia)/urdf/mybot.gazebo" />
+
+
+   <!-- dummy link -->
+        <link name="base_footprint"/>
+        <joint name="dummy_joint" type="fixed">
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <parent link="base_footprint"/>
+          <child link="base_link"/>
+          <axis xyz="0.0 0.0 0.0"/>
+          <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/>
+        </joint>
+
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.055093 0.00038263 0.083393"
+        rpy="0 0 0" />
+      <mass
+        value="61.45" />
+      <inertia
+        ixx="6.7335"
+        ixy="0.00012281"
+        ixz="0.56894"
+        iyy="21.02"
+        iyz="-0.014285"
+        izz="21.189" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="front_right_wheel_link">
+    <inertial>
+      <origin
+        xyz="-1.5543E-15 0.085 2.4425E-15"
+        rpy="0 0 0" />
+      <mass
+        value="27.504" />
+      <inertia
+        ixx="0.43066"
+        ixy="3.2489E-18"
+        ixz="-7.2388E-18"
+        iyy="0.73819"
+        iyz="-7.1284E-20"
+        izz="0.43066" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="1.0431 -0.50032 0.061"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_wheel_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="front_left_wheel_link">
+    <inertial>
+      <origin
+        xyz="0 -0.085 -2.2204E-16"
+        rpy="0 0 0" />
+      <mass
+        value="27.504" />
+      <inertia
+        ixx="0.43066"
+        ixy="-4.4685E-18"
+        ixz="-1.4459E-18"
+        iyy="0.73819"
+        iyz="-2.0771E-19"
+        izz="0.43066" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="1.0431 0.49993 0.061"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_wheel_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="rear_left_wheel_link">
+    <inertial>
+      <origin
+        xyz="0 -0.12 0"
+        rpy="0 0 0" />
+      <mass
+        value="48.005" />
+      <inertia
+        ixx="1.0037"
+        ixy="1.236E-17"
+        ixz="-1.7355E-18"
+        iyy="1.5955"
+        iyz="-1.9651E-19"
+        izz="1.0037" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_left_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_left_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-1.0569 0.5001 0.091"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_left_wheel_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="rear_right_wheel_link">
+    <inertial>
+      <origin
+        xyz="0 0.12 0"
+        rpy="0 0 0" />
+      <mass
+        value="48.005" />
+      <inertia
+        ixx="1.0037"
+        ixy="-7.1557E-18"
+        ixz="8.897E-19"
+        iyy="1.5955"
+        iyz="1.7889E-18"
+        izz="1.0037" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_right_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_right_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-1.0569 -0.50021 0.091"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_right_wheel_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="front_right_steer_link">
+    <inertial>
+      <origin
+        xyz="1.9984E-15 0.05 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.007854" />
+      <inertia
+        ixx="6.5941E-06"
+        ixy="2.6431E-20"
+        ixz="2.7573E-24"
+        iyy="9.8175E-08"
+        iyz="-3.2033E-24"
+        izz="6.5941E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_steer_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_steer_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_steer_joint"
+    type="prismatic">
+    <origin
+      xyz="0.97722 -0.32832 0.051213"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_steer_link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="front_left_steer_link">
+    <inertial>
+      <origin
+        xyz="2.2204E-15 -0.05 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.007854" />
+      <inertia
+        ixx="6.5941E-06"
+        ixy="2.6431E-20"
+        ixz="2.7573E-24"
+        iyy="9.8175E-08"
+        iyz="-3.2033E-24"
+        izz="6.5941E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_steer_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_steer_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_steer_joint"
+    type="prismatic">
+    <origin
+      xyz="0.97722 0.32694 0.051213"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_steer_link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="100"
+      velocity="0" />
+  </joint>
+  <link
+    name="steering_link">
+    <inertial>
+      <origin
+        xyz="-0.0019279 -9.1558E-05 -0.0012714"
+        rpy="0 0 0" />
+      <mass
+        value="0.32198" />
+      <inertia
+        ixx="0.0047274"
+        ixy="-2.8498E-08"
+        ixz="6.2308E-06"
+        iyy="0.0019325"
+        iyz="3.0079E-08"
+        izz="0.0028608" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/steering_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/steering_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="steering_joint"
+    type="continuous">
+    <origin
+      xyz="0.28269 -0.00024936 0.44194"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="steering_link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="front_camera_link">
+    <inertial>
+      <origin
+        xyz="0.059799 -0.0013168 1.1692"
+        rpy="0 0 0" />
+      <mass
+        value="0.040716" />
+      <inertia
+        ixx="3.2796E-05"
+        ixy="3.834E-08"
+        ixz="-2.8496E-06"
+        iyy="1.0051E-05"
+        iyz="-9.5815E-09"
+        izz="2.7821E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.59216 0.66667 0.68235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_camera_link">
+    <inertial>
+      <origin
+        xyz="-0.23976 0.37174 1.1241"
+        rpy="0 0 0" />
+      <mass
+        value="0.040716" />
+      <inertia
+        ixx="1.0052E-05"
+        ixy="-1.6285E-08"
+        ixz="8.1977E-08"
+        iyy="3.0506E-05"
+        iyz="-3.7774E-06"
+        izz="3.011E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.59216 0.66667 0.68235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_camera_link">
+    <inertial>
+      <origin
+        xyz="-0.23557 -0.37387 1.1233"
+        rpy="0 0 0" />
+      <mass
+        value="0.040716" />
+      <inertia
+        ixx="1.0052E-05"
+        ixy="-4.4207E-08"
+        ixz="4.1112E-08"
+        iyy="2.9847E-05"
+        iyz="3.7545E-06"
+        izz="3.0769E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.59216 0.66667 0.68235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="rear_camera_link">
+    <inertial>
+      <origin
+        xyz="-0.50476 -0.00027997 1.0733"
+        rpy="0 0 0" />
+      <mass
+        value="0.040716" />
+      <inertia
+        ixx="3.3887E-05"
+        ixy="3.9515E-08"
+        ixz="1.224E-06"
+        iyy="1.0051E-05"
+        iyz="-6.6812E-10"
+        izz="2.6729E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.59216 0.66667 0.68235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="imu_link">
+    <inertial>
+      <origin
+        xyz="0.069498 -0.0011601 1.1359"
+        rpy="0 0 0" />
+      <mass
+        value="0.0015" />
+      <inertia
+        ixx="2.6828E-08"
+        ixy="6.2039E-25"
+        ixz="5.0218E-09"
+        iyy="4.0625E-08"
+        iyz="-6.8932E-25"
+        izz="3.8797E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/imu_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/imu_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="imu_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="imu_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_middle_ultra_link">
+    <inertial>
+      <origin
+        xyz="1.2534 -1.5685E-05 0.045769"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="1.2199E-06"
+        ixy="-1.1399E-10"
+        ixz="-4.2755E-09"
+        iyy="2.3852E-07"
+        iyz="2.1039E-10"
+        izz="1.1947E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_middle_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_middle_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_middle_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_middle_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_left_ultra_link">
+    <inertial>
+      <origin
+        xyz="1.2509 0.1724 0.04575"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="9.8104E-07"
+        ixy="4.1851E-07"
+        ixz="3.5723E-08"
+        iyy="4.8388E-07"
+        iyz="-7.4646E-08"
+        izz="1.1882E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_left_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_right_ultra_link">
+    <inertial>
+      <origin
+        xyz="1.2552 -0.1649 0.044998"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="9.8088E-07"
+        ixy="-4.1858E-07"
+        ixz="3.595E-08"
+        iyy="4.8411E-07"
+        iyz="7.501E-08"
+        izz="1.1881E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/front_right_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_corner_ultra_link">
+    <inertial>
+      <origin
+        xyz="0.55346 0.47594 0.042834"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="6.3334E-07"
+        ixy="4.7802E-07"
+        ixz="-8.0778E-09"
+        iyy="8.1729E-07"
+        iyz="-9.4053E-09"
+        izz="1.2025E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_corner_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_corner_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_corner_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_corner_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_corner_ultra_link">
+    <inertial>
+      <origin
+        xyz="0.54903 -0.47888 0.042834"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="4.819E-07"
+        ixy="-4.2157E-07"
+        ixz="-5.991E-09"
+        iyy="9.6872E-07"
+        iyz="1.0854E-08"
+        izz="1.2025E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_corner_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_corner_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_corner_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_corner_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_middle_ultra_link">
+    <inertial>
+      <origin
+        xyz="-0.11671 -0.47568 0.1218"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="2.3852E-07"
+        ixy="1.3189E-10"
+        ixz="1.9966E-10"
+        iyy="1.2204E-06"
+        iyz="2.0237E-09"
+        izz="1.1941E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_middle_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_middle_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_middle_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_middle_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_rear_ultra_link">
+    <inertial>
+      <origin
+        xyz="-0.36095 -0.39419 0.12461"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="2.3852E-07"
+        ixy="7.572E-11"
+        ixz="2.2699E-10"
+        iyy="1.2177E-06"
+        iyz="8.325E-09"
+        izz="1.1969E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_rear_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/right_rear_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_rear_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_rear_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_rear_ultra_link">
+    <inertial>
+      <origin
+        xyz="-0.36344 0.3889 0.12467"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="2.3852E-07"
+        ixy="7.572E-11"
+        ixz="-2.2699E-10"
+        iyy="1.2177E-06"
+        iyz="-8.325E-09"
+        izz="1.1969E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_rear_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_rear_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_rear_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_rear_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_middle_ultra_link">
+    <inertial>
+      <origin
+        xyz="-0.11719 0.47568 0.1218"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="2.3852E-07"
+        ixy="1.3189E-10"
+        ixz="-1.9966E-10"
+        iyy="1.2204E-06"
+        iyz="-2.0237E-09"
+        izz="1.1941E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_middle_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/left_middle_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_middle_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_middle_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="rear_ultra_link">
+    <inertial>
+      <origin
+        xyz="-0.87729 9.1702E-05 0.5431"
+        rpy="0 0 0" />
+      <mass
+        value="0.0062273" />
+      <inertia
+        ixx="1.2204E-06"
+        ixy="-1.3189E-10"
+        ixz="2.0237E-09"
+        iyy="2.3852E-07"
+        iyz="-1.9966E-10"
+        izz="1.1941E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_ultra_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://historia/meshes/rear_ultra_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_ultra_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_ultra_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+</robot>
