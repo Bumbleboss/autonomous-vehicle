@@ -24,7 +24,7 @@
     </sensor>
   </gazebo>
 
-<!--GPS-->
+<!-- GPS -->
   <gazebo>
     <plugin name="gazebo_ros_gps" filename="libhector_gazebo_ros_gps.so">
       <updateRate>4.0</updateRate>
@@ -44,71 +44,28 @@
     </plugin>
   </gazebo>
 
+       <!-- GPS Sensor -->
+  <!-- <gazebo>
+    <plugin name="novatel_gps_sim" filename="libhector_gazebo_ros_gps.so">
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>fix</topicName>
+      <velocityTopicName>fix_velocity</velocityTopicName>
+      <drift>5.0 5.0 5.0</drift>
+      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <velocityDrift>0 0 0</velocityDrift>
+      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+    </plugin>
+  </gazebo> -->
+
 <!--CAMERA-->
 
  <gazebo reference="front_camera_link">
     <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
       <camera name="left">
-        <pose>1.5 0.07 0.2 0 0 0</pose>    
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <camera name="right">
-        <pose>1.5 -0.07 0.2 0 0 0</pose>
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-
-      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>tenacity/oakd_camera</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <frameName>front_camera_link</frameName>
-        <hackBaseline>0.00</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-
- <!-- <gazebo reference="rear_camera_link">
-    <sensor type="multicamera" name="stereo_camera">
-      <update_rate>30.0</update_rate>
-      <camera name="left">
-        <pose>0 0.2 0 0 0 0</pose>
+        <pose>0 0.07 0 0 0 0</pose>    
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -147,7 +104,65 @@
       <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>tenacity/oakd_camera</cameraName>
+        <cameraName>tenacity/front_camera_link</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>front_camera_link</frameName>
+        <hackBaseline>0.00</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+ <gazebo reference="rear_camera_link">
+    <sensor type="multicamera" name="stereo_camera">
+      <update_rate>30.0</update_rate>
+      <camera name="left">
+        <pose>0 0.07 0 0 0 0</pose>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <camera name="right">
+        <pose>0 -0.07 0 0 0 0</pose>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+
+      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>tenacity/rear_camera_link</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>rear_camera_link</frameName>
@@ -166,7 +181,7 @@
     <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
       <camera name="left">
-        <pose>0 0.2 0 0 0 0</pose>
+        <pose>0 0.07 0 0 0 0</pose>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -204,7 +219,7 @@
       <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>tenacity/oakd_camera</cameraName>
+        <cameraName>tenacity/right_camera_link</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>right_camera_link</frameName>
@@ -223,7 +238,7 @@
     <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
       <camera name="left">
-        <pose>0 0.2 0 0 0 0</pose>
+        <pose>0 0.07 0 0 0 0</pose>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -261,7 +276,7 @@
       <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>tenacity/oakd_camera</cameraName>
+        <cameraName>tenacity/left_camera_link</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>left_camera_link</frameName>
@@ -273,7 +288,7 @@
         <distortionT2>0.0</distortionT2>
       </plugin>
     </sensor>
-  </gazebo> -->
+  </gazebo> 
 
 
 <!--ULTRASONIC-->
@@ -282,20 +297,20 @@
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -308,34 +323,34 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/rear</topicName>
+            <frameName>rear_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
         </sensor>
       </gazebo>
 
-          
+
             <gazebo reference="left_middle_ultra_link">
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -348,9 +363,9 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/left_middle</topicName>
+            <frameName>left_middle_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
@@ -362,59 +377,20 @@
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </vertical>
-            </scan>
-            <range>
-              <min>0.02</min>
-              <max>1.5</max>
-              <resolution>0.01</resolution>
-            </range>
-          </ray>
-
-            <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-            <gaussianNoise>0.005</gaussianNoise>
-            <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
-            <fov>0.5</fov>
-            <radiation>ultrasound</radiation>
-          </plugin>
-        </sensor>
-      </gazebo>
-
-                      <gazebo reference="right_rear_ultra_link">
-      <sensor type="ray" name="sonar">
-          <pose>1.570796325 0 0 0 0 0</pose>
-          <visualize>true</visualize>
-          <update_rate>50</update_rate>
-          <ray>
-            <scan>
-              <horizontal>
-                <samples>50</samples>
-                <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </horizontal>
-              <vertical>
-                <samples>50</samples>
-                <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -427,33 +403,74 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/left_rear</topicName>
+            <frameName>left_rear_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
         </sensor>
       </gazebo>
 
-      <gazebo reference="right_middle_ultra_link">
+
+            <gazebo reference="right_rear_ultra_link">
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.02</min>
+              <max>1.5</max>
+              <resolution>0.01</resolution>
+            </range>
+          </ray>
+
+          <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+            <gaussianNoise>0.005</gaussianNoise>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/right_rear</topicName>
+            <frameName>right_rear_ultra_link</frameName>
+            <fov>0.5</fov>
+            <radiation>ultrasound</radiation>
+          </plugin>
+        </sensor>
+      </gazebo>
+
+
+            <gazebo reference="right_middle_ultra_link">
+      <sensor type="ray" name="sonar">
+          <pose>1.570796325 0 0 0 0 0</pose>
+          <visualize>true</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>40</samples>
+                <resolution>1.0</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>40</samples>
+                <resolution>1</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -466,33 +483,34 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/right_middle</topicName>
+            <frameName>right_middle_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
         </sensor>
       </gazebo>
 
-      <gazebo reference="right_corner_ultra_link">
+
+            <gazebo reference="right_corner_ultra_link">
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -505,9 +523,9 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/right_corner</topicName>
+            <frameName>right_corner_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
@@ -515,24 +533,24 @@
       </gazebo>
 
 
-      <gazebo reference="left_corner_ultra_link">
+            <gazebo reference="left_corner_ultra_link">
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -545,34 +563,114 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/left_corner</topicName>
+            <frameName>left_corner_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
         </sensor>
       </gazebo>
 
-      
-      <gazebo reference="front_right_ultra_link">
+
+            <gazebo reference="front_right_ultra_link">
       <sensor type="ray" name="sonar">
           <pose>1.570796325 0 0 0 0 0</pose>
           <visualize>true</visualize>
-          <update_rate>50</update_rate>
+          <update_rate>40</update_rate>
           <ray>
             <scan>
               <horizontal>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </horizontal>
               <vertical>
-                <samples>50</samples>
+                <samples>40</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.02</min>
+              <max>4</max>
+              <resolution>0.01</resolution>
+            </range>
+          </ray>
+
+          <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+            <gaussianNoise>0.005</gaussianNoise>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/front_right</topicName>
+            <frameName>front_right_ultra_link</frameName>
+            <fov>0.5</fov>
+            <radiation>ultrasound</radiation>
+          </plugin>
+        </sensor>
+      </gazebo>
+
+
+            <gazebo reference="front_left_ultra_link">
+      <sensor type="ray" name="sonar">
+          <pose>1.570796325 0 0 0 0 0</pose>
+          <visualize>true</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>40</samples>
+                <resolution>1.0</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>40</samples>
+                <resolution>1</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.02</min>
+              <max>4</max>
+              <resolution>0.01</resolution>
+            </range>
+          </ray>
+
+          <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+            <gaussianNoise>0.005</gaussianNoise>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/front_left</topicName>
+            <frameName>front_left_ultra_link</frameName>
+            <fov>0.5</fov>
+            <radiation>ultrasound</radiation>
+          </plugin>
+        </sensor>
+      </gazebo>
+
+
+            <gazebo reference="front_middle_ultra_link">
+      <sensor type="ray" name="sonar">
+          <pose>1.570796325 0 0 0 0 0</pose>
+          <visualize>true</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>40</samples>
+                <resolution>1.0</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>40</samples>
+                <resolution>1</resolution>
+                <min_angle>-0.122173048</min_angle>
+                <max_angle>0.122173048</max_angle>
               </vertical>
             </scan>
             <range>
@@ -585,94 +683,13 @@
           <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
             <gaussianNoise>0.005</gaussianNoise>
             <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
+            <updateRate>40</updateRate>
+            <topicName>/genius/sonar/front_middle</topicName>
+            <frameName>front_middle_ultra_link</frameName>
             <fov>0.5</fov>
             <radiation>ultrasound</radiation>
           </plugin>
         </sensor>
       </gazebo>
-
-
-      <gazebo reference="front_left_ultra_link">
-      <sensor type="ray" name="sonar">
-          <pose>1.570796325 0 0 0 0 0</pose>
-          <visualize>true</visualize>
-          <update_rate>50</update_rate>
-          <ray>
-            <scan>
-              <horizontal>
-                <samples>50</samples>
-                <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </horizontal>
-              <vertical>
-                <samples>50</samples>
-                <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </vertical>
-            </scan>
-            <range>
-              <min>0.02</min>
-              <max>8</max>
-              <resolution>0.01</resolution>
-            </range>
-          </ray>
-
-          <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-            <gaussianNoise>0.005</gaussianNoise>
-            <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
-            <fov>0.5</fov>
-            <radiation>ultrasound</radiation>
-          </plugin>
-        </sensor>
-      </gazebo>
-
-
-      <gazebo reference="front_middle_ultra_link">
-      <sensor type="ray" name="sonar">
-          <pose>1.570796325 0 0 0 0 0</pose>
-          <visualize>true</visualize>
-          <update_rate>50</update_rate>
-          <ray>
-            <scan>https://robotics.stackexchange.com/questions/21673/tried-to-advertise-a-service-that-is-already-advertised-in-this-node-leo-contr
-              <horizontal>
-                <samples>50</samples>
-                <resolution>1.0</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </horizontal>
-              <vertical>
-                <samples>50</samples>
-                <resolution>1</resolution>
-                <min_angle>-1.570796325</min_angle>
-                <max_angle>1.570796325</max_angle>
-              </vertical>
-            </scan>
-            <range>
-              <min>0.02</min>
-              <max>8</max>https://robotics.stackexchange.com/questions/21673/tried-to-advertise-a-service-that-is-already-advertised-in-this-node-leo-contr
-              <resolution>0.01</resolution>
-            </range>
-          </ray>
-
-          <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-            <gaussianNoise>0.005</gaussianNoise>
-            <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>/genius/sonar</topicName>
-            <frameName>ultrasonic</frameName>
-            <fov>0.5</fov>
-            <radiation>ultrasound</radiation>
-          </plugin>
-        </sensor>
-      </gazebo>
-
 
 </robot>
