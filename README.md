@@ -1,26 +1,28 @@
-# YOLO Custom Training for OAK-D Camera
-This branch of the repository deals with training custom dataset for our graduation project.
+# Computer Vision tasks using ROS1-noetic
+This branch of the repository deals with computer vision tasks in autonomous vehicles and implementing them using ROS noetic.
 
-The weighted result from training will be uploaded on [Luxonis Tools](https://tools.luxonis.com/) to compile a
-blob and JSON configuration for use with our OAK-D camera.
+# Setup the enviroment for ROS
+You must first clone the repository, then change your terminal directory to its path. Proceed to enter the following commands into the terminal:
 
-Our notebooks
-- [YOLOv6n-udacity](https://www.kaggle.com/code/bumbleboss/yolov6-training)
-- [YOLOv6n-udacity+pedestrians](https://www.kaggle.com/code/bumbleboss/yolov6-training-pedestrians)
 
-Outsource model
-- [YOLOv7](https://github.com/WongKinYiu/yolov7/releases)
+```bash
+catkin_make # note that catkin_make can only be done in the workspace directory
+source devel/setup.bash
+```
+Now you are ready to run our work!
 
-# Custom Trained Models
-### YOLOv6n-udacity
-This model works well for all classes except for pedestrians, for which there is very poor recognition. The reason for this is that pedestrian labels are underdefined and car labels are overdefined. We attempted to solve this issue in the following section by adding more pedestrian images and labels to our udacity dataset.
+# Object Detection
+We're using OAK-D camera and YOLO as our object detection method. You can run the code with the following command:
 
-### YOLOv6n-udacity+pedestrians
-The recognition of pedestrians improved as more images were added to the udacity dataset, but problems with other classes also surfaced. These objects are not recognized when they are close to the camera, but their recognition improves when increasing the distance.
+```bash
+rosrun oakd spatial.py
+```
 
-# Pretrained Models
-### YOLOv7-tiny
-We utilized the Yolo v7-tiny that is trained on COCO dataset whilst removing the classes that we won't need for our autonomous driving journey.
+This will result in two messages being sent to ROS, an array of detected objects, one with classes, the other with coordiantes.
+You can view the output from terminal or by running rviz to see realtime object detection.
 
-# Feedback
-You are welcome to provide us with feedback and insight on improving our current models by submitting a pull request.
+```bash
+rviz
+```
+
+After launching rviz, select the add button to add an image visualization, then change the image topic to /oakd/camera/image.

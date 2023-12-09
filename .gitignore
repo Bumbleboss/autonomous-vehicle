@@ -1,2 +1,7 @@
-# IDE folders
+devel
+build
+.vscode
 .idea
+.catkin_workspace
+
+**/yolo_models
