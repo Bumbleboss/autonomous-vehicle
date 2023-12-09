@@ -1,0 +1,35 @@
+{
+    "model": {
+        "xml": "best_ckpt.xml",
+        "bin": "best_ckpt.bin"
+    },
+    "nn_config": {
+        "output_format": "detection",
+        "NN_family": "YOLO",
+        "input_size": "512x512",
+        "NN_specific_metadata": {
+            "classes": 11,
+            "coordinates": 4,
+            "anchors": [],
+            "anchor_masks": {},
+            "iou_threshold": 0.5,
+            "confidence_threshold": 0.5
+        }
+    },
+    "mappings": {
+        "labels": [
+            "biker",                 
+            "car",            
+            "pedestrian",       
+            "trafficLight" ,         
+            "trafficLight-Green",    
+            "trafficLight-GreenLeft",
+            "trafficLight-Red",      
+            "trafficLight-RedLeft",  
+            "trafficLight-Yellow", 
+            "trafficLight-YellowLeft",
+            "truck" 
+        ]
+    },
+    "version": 1
+}
