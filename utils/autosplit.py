@@ -22,7 +22,7 @@ def get_weighted_list(images_dir, weights=(0.9, 0.1, 0.0)):
 def create_dir(dataset_dir, category_dir, subset_dir):
     for category in category_dir:
         for subset in subset_dir:
-            computed_path = os.path.join(dataset_dir, subset, category)
+            computed_path = os.path.join(dataset_dir, category, subset)
             if not os.path.isdir(computed_path):
                 os.makedirs(computed_path)
                 print('Directory does not exist, creating directory: %s' % computed_path)
@@ -31,8 +31,8 @@ def create_dir(dataset_dir, category_dir, subset_dir):
 dataset = 'Self-Driving-Car-3'
 images_d = 'export/images'
 labels_d = 'export/labels'
-category_d = ['images', 'labels']
-subset_d = ['train', 'valid', 'test']
+category_d = ['train', 'valid', 'test'] 
+subset_d = ['images', 'labels']
 
 
 def main():
