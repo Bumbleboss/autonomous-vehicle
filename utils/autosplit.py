@@ -46,11 +46,11 @@ def main():
         for file in category:
             org_img = os.path.join(dataset, images_d, file)
             org_txt = os.path.join(dataset, labels_d, file)
-            org_txt = os.path.splitext(org_txt)[0] + '.txt'
+            org_txt = os.path.splitext(org_txt)[0]+'.txt'
 
-            image_path = os.path.join(dataset, subset_d[i], category_d[0], file)
-            txt_path = os.path.join(dataset, subset_d[i], category_d[1], file)
-            txt_path = os.path.splitext(txt_path)[0] + '.txt'
+            image_path = os.path.join(category_d[0], dataset, subset_d[i], file)
+            txt_path = os.path.join(category_d[1], dataset, subset_d[i], file)
+            txt_path = os.path.splitext(txt_path)[0]+'.txt'
 
             os.popen('cp %s %s' % (org_img, image_path))
             os.popen('cp %s %s' % (org_txt, txt_path))
