@@ -22,7 +22,7 @@ def get_weighted_list(images_dir, weights=(0.9, 0.1, 0.0)):
 def create_dir(dataset_dir, category_dir, subset_dir):
     for category in category_dir:
         for subset in subset_dir:
-            computed_path = os.path.join(dataset_dir, category, subset)
+            computed_path = os.path.join(dataset_dir, subset, category)
             if not os.path.isdir(computed_path):
                 os.makedirs(computed_path)
                 print('Directory does not exist, creating directory: %s' % computed_path)
@@ -48,8 +48,8 @@ def main():
             org_txt = os.path.join(dataset, labels_d, file)
             org_txt = os.path.splitext(org_txt)[0]+'.txt'
 
-            image_path = os.path.join(category_d[0], subset_d[i], dataset, file)
-            txt_path = os.path.join(category_d[1], subset_d[i], dataset, file)
+            image_path = os.path.join(dataset, category_d[0], subset_d[i], file)
+            txt_path = os.path.join(dataset, category_d[1], subset_d[i], file)
             txt_path = os.path.splitext(txt_path)[0]+'.txt'
 
             os.popen('cp %s %s' % (org_img, image_path))
