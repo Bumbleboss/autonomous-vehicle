@@ -48,8 +48,8 @@ def main():
             org_txt = os.path.join(dataset, labels_d, file)
             org_txt = os.path.splitext(org_txt)[0]+'.txt'
 
-            image_path = os.path.join(category_d[0], dataset, subset_d[i], file)
-            txt_path = os.path.join(category_d[1], dataset, subset_d[i], file)
+            image_path = os.path.join(category_d[0], subset_d[i], dataset, file)
+            txt_path = os.path.join(category_d[1], subset_d[i], dataset, file)
             txt_path = os.path.splitext(txt_path)[0]+'.txt'
 
             os.popen('cp %s %s' % (org_img, image_path))
