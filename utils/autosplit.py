@@ -63,13 +63,17 @@ def main():
       org_txt = os.path.join(dataset, labels_d, file)
       org_txt = os.path.splitext(org_txt)[0]+'.txt'
 
-      image_path = os.path.join(dataset, category_d[0], subset_d[i], file)
-      txt_path = os.path.join(dataset, category_d[1], subset_d[i], file)
+      if (args.yolo == 7):
+        image_path = os.path.join(dataset, category_d[i], subset_d[0], file)
+        txt_path = os.path.join(dataset, category_d[i], subset_d[1], file)
+      else:
+        image_path = os.path.join(dataset, category_d[1], subset_d[i], file)
+        txt_path = os.path.join(dataset, category_d[0], subset_d[i], file)
+      
       txt_path = os.path.splitext(txt_path)[0]+'.txt'
 
       os.popen('cp %s %s' % (org_img, image_path))
       os.popen('cp %s %s' % (org_txt, txt_path))
-
 
 if __name__ == "__main__":
   main()
