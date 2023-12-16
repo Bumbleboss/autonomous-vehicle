@@ -31,8 +31,8 @@ def create_dir(dataset_dir, category_dir, subset_dir):
 dataset = 'Self-Driving-Car-3'
 images_d = 'export/images'
 labels_d = 'export/labels'
-category_d = ['train', 'valid', 'test'] 
-subset_d = ['images', 'labels']
+category_d = ['images', 'labels']
+subset_d = ['train', 'valid', 'test']
 
 
 def main():
