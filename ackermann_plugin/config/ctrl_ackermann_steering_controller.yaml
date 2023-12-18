@@ -31,7 +31,7 @@ ackermann_steering_controller:
     odom_frame_id: '/odom'
 
     # Set to false if the motor driver provides velocity data. 
-    estimate_velocity_from_position: false
+    estimate_velocity_from_position: true
 
     # Commands
     publish_cmd: true

@@ -37,11 +37,11 @@ for historia robot</p>
     <exec_depend>steer_drive_controller</exec_depend>
 
 <!-- from .xml of description-->
-    <depend>urdf</depend>
-    <depend>xacro</depend>
+    <!-- <depend>urdf</depend>
+    <depend>xacro</depend> -->
 
 <!-- from .xml of steer_bot_gazebo-->
-    <exec_depend>gazebo_ros</exec_depend>
+    <!-- <exec_depend>gazebo_ros</exec_depend> -->
     <exec_depend>gazebo_ros_control</exec_depend>
     <exec_depend>rqt_robot_steering</exec_depend>
     <exec_depend>steer_bot_control</exec_depend>
@@ -49,7 +49,7 @@ for historia robot</p>
     <exec_depend>steer_bot_description</exec_depend>
 
 <!-- from .xml of steer_bot_rviz-->
-    <buildtool_depend>catkin</buildtool_depend>
+    <!-- <buildtool_depend>catkin</buildtool_depend> -->
 
 
   <depend>roslaunch</depend>
