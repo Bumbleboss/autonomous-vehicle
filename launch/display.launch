@@ -1,17 +1,26 @@
 <launch>
+
+  <!-- Load the robot description -->
   <arg
     name="model" />
   <param
     name="robot_description"
-    textfile="$(find historia)/urdf/historia.xacro" />
+    textfile="$(find historia)/urdf/historia.urdf" />
+
+
+  <!-- Publish joint states -->
   <node
     name="joint_state_publisher_gui"
     pkg="joint_state_publisher_gui"
     type="joint_state_publisher_gui" />
+
+  <!-- Publish robot state -->
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"
     type="robot_state_publisher" />
+
+  <!-- Open rviz -->
   <node
     name="rviz"
     pkg="rviz"

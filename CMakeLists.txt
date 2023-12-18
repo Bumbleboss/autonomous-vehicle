@@ -9,11 +9,12 @@ find_package(catkin REQUIRED COMPONENTS
 	sensor_msgs
 	std_msgs
 	nav_msgs
+	roslaunch
+	urdf
+	xacro
 )
-
+ # xacro and urdf from ackermann plugin
 catkin_package()
-
-find_package(roslaunch)
 
 
 # include_directories(${catkin_INCLUDE_DIRS})
