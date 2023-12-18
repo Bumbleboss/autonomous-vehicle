@@ -12,18 +12,21 @@ for historia robot</p>
   <buildtool_depend>catkin</buildtool_depend>
 
 <build_depend>roscpp</build_depend>
+<build_depend>rospy</build_depend>
 <build_depend>sensor_msgs</build_depend>
 <build_depend>geometry_msgs</build_depend>
 <build_depend>std_msgs</build_depend>
 <build_depend>nav_msgs</build_depend>
 
 <build_export_depend>roscpp</build_export_depend>
+<build_export_depend>rospy</build_export_depend>
 <build_export_depend>sensor_msgs</build_export_depend>
 <build_export_depend>geometry_msgs</build_export_depend>
 <build_export_depend>std_msgs</build_export_depend>
 <build_export_depend>nav_msgs</build_export_depend>
 
 <exec_depend>roscpp</exec_depend>
+<exec_depend>rospy</exec_depend>
 <exec_depend>sensor_msgs</exec_depend>
 <exec_depend>geometry_msgs</exec_depend>
 <exec_depend>std_msgs</exec_depend>
@@ -36,20 +39,12 @@ for historia robot</p>
     <exec_depend>ackermann_steering_controller</exec_depend>
     <exec_depend>steer_drive_controller</exec_depend>
 
-<!-- from .xml of description-->
-    <!-- <depend>urdf</depend>
-    <depend>xacro</depend> -->
-
 <!-- from .xml of steer_bot_gazebo-->
-    <!-- <exec_depend>gazebo_ros</exec_depend> -->
     <exec_depend>gazebo_ros_control</exec_depend>
     <exec_depend>rqt_robot_steering</exec_depend>
     <exec_depend>steer_bot_control</exec_depend>
     <exec_depend>steer_bot_hardware_gazebo</exec_depend>
     <exec_depend>steer_bot_description</exec_depend>
-
-<!-- from .xml of steer_bot_rviz-->
-    <!-- <buildtool_depend>catkin</buildtool_depend> -->
 
 
   <depend>roslaunch</depend>

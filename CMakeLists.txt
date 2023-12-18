@@ -5,13 +5,12 @@ project(historia)
 # find_package(catkin REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
 	roscpp
+	rospy
 	geometry_msgs
 	sensor_msgs
 	std_msgs
 	nav_msgs
 	roslaunch
-	urdf
-	xacro
 )
  # xacro and urdf from ackermann plugin
 catkin_package()
