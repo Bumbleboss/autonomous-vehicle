@@ -17,6 +17,10 @@ for historia robot</p>
 <build_depend>geometry_msgs</build_depend>
 <build_depend>std_msgs</build_depend>
 <build_depend>nav_msgs</build_depend>
+  <build_depend>boost</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>liburdfdom-dev</build_depend>
+
 
 <build_export_depend>roscpp</build_export_depend>
 <build_export_depend>rospy</build_export_depend>
@@ -24,6 +28,7 @@ for historia robot</p>
 <build_export_depend>geometry_msgs</build_export_depend>
 <build_export_depend>std_msgs</build_export_depend>
 <build_export_depend>nav_msgs</build_export_depend>
+  <build_export_depend>boost</build_export_depend>
 
 <exec_depend>roscpp</exec_depend>
 <exec_depend>rospy</exec_depend>
@@ -38,6 +43,8 @@ for historia robot</p>
     <exec_depend>joint_state_controller</exec_depend>
     <exec_depend>ackermann_steering_controller</exec_depend>
     <exec_depend>steer_drive_controller</exec_depend>
+      <exec_depend>pluginlib</exec_depend>
+      <exec_depend>liburdfdom-dev</exec_depend>
 
 <!-- from .xml of steer_bot_gazebo-->
     <exec_depend>gazebo_ros_control</exec_depend>
@@ -52,7 +59,20 @@ for historia robot</p>
   <depend>rviz</depend>
   <depend>joint_state_publisher_gui</depend>
   <depend>gazebo</depend>
-  <export>
-    <architecture_independent />
+  <depend>controller_interface</depend>
+  <depend>diff_drive_controller</depend>
+    <depend>hardware_interface</depend>
+    <depend>realtime_tools</depend>
+    <depend>tf</depend>
+
+    <test_depend>controller_manager</test_depend>
+    <test_depend>controller_manager_msgs</test_depend>
+    <test_depend>geometry_msgs</test_depend>
+    <test_depend>rostest</test_depend>
+    <test_depend>std_msgs</test_depend>
+    <test_depend>std_srvs</test_depend>
+    <test_depend>xacro</test_depend>
+ <export>
+    <controller_interface plugin="${prefix}/ackermann_steering_controller_plugins.xml"/>
   </export>
 </package>

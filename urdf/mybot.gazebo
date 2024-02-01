@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <robot name="historia" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>historia</robotNamespace>
+      <robotSimType>steer_bot_hardware_gazebo/SteerBotHardwareGazebo</robotSimType>
+    </plugin>
+  </gazebo>
 
 
   <!--imu-->
@@ -109,7 +116,7 @@
     </sensor>
   </gazebo>
 
-
+<!--
  <gazebo reference="rear_camera_link">
     <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
@@ -280,7 +287,7 @@
       </plugin>
     </sensor>
   </gazebo> 
-
+-->
 
 <!--ULTRASONIC-->
 

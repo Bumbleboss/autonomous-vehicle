@@ -1,14 +1,14 @@
 # Configuration for the ackermann_steering_controller.
-ackermann_steering_controller:
-    type: 'ackermann_steering_controller/AckermannSteeringController'
+mobile_base_controller:
+    type: "ackermann_steering_controller/AckermannSteeringController"
 
     # Odometry related 
     publish_rate: 50                    # default: 1.0
-    open_loop: false
+    open_loop: true
 
     # Joints
     rear_wheel: 'rear_wheel_joint'
-    front_steer: 'steering_joint'
+    front_steer: 'front_steer_joint'
 
     # Geometry
     wheel_separation_h: 2.1
@@ -20,15 +20,15 @@ ackermann_steering_controller:
     steer_pos_multiplier: 1.0           # default: 1.0
 
     # Odometry covariances for the encoder output of the robot.
-    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+    pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+    twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
 
     # Top level frame (link) of the robot description
-    base_frame_id: 'base_link'
+    base_frame_id: base_link
 
     # Transform from odom -> base_link
     enable_odom_tf: true
-    odom_frame_id: '/odom'
+    odom_frame_id: odom
 
     # Set to false if the motor driver provides velocity data. 
     estimate_velocity_from_position: true
@@ -43,13 +43,18 @@ ackermann_steering_controller:
             has_velocity_limits    : true
             max_velocity           : 1.0   # m/s
             has_acceleration_limits: true
-            max_acceleration       : 0.5    # m/s^2
+            max_acceleration       : 0.8    # m/s^2
+            min_acceleration       : -0.4 # m/s^2
+            has_jerk_limits        : true
+            max_jerk               : 5.0 # m/s^3
     angular:
         z:
             has_velocity_limits    : true
             max_velocity           : 0.2   # rad/s
             has_acceleration_limits: true
             max_acceleration       : 0.1    # rad/s^2
+            has_jerk_limits        : true
+            max_jerk               : 0.25 # rad/s^3
 
     # Other (undocumented but in source code)
     # velocity_rolling_window_size: 10
