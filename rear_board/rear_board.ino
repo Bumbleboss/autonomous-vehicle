@@ -1,51 +1,13 @@
 #include <PWM.h>
 #include <mcp2515.h>
-#include "rear_board_pins.h"
-
-// setting the limits for important values
-typedef unsigned char uint8;
-typedef unsigned long uint32;
+#include "rear_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
-
-struct can_frame can_msg_receive;
-struct can_frame can_msg_send;
 
 uint8 throttle;
 uint8 throttle_old;
 
 volatile uint32 pulse_count = 0;
-
-/**
- * interrupt service routine for calculating pulses
-*/
-void int0ISR() {
-  pulse_count++;
-
-  if (pulse_count >= 65000) {
-    pulse_count = 0;
-  }
-}
-
-/**
- * refactored function for sending pwm signal to motor
-*/
-void set_motor_value(uint8 value) {
-  pwmWriteHR(MOTOR_PIN, value);
-  SetPinFrequencySafe(MOTOR_PIN, 1000);
-}
-
-/**
- * increment or decrement to the desired value based on old throttle value
-*/
-void set_throttle(uint8 value) {
-  uint8 i = throttle_old;
-
-  // fancy statements to avoid having two separate loops
-  for (; i > value | i < value; throttle_old > value ? i-- : i++) {
-    set_motor_value(i);
-  }
-}
 
 void setup() {
   // setting up CAN
@@ -102,3 +64,21 @@ void loop() {
 
   mcp2515.sendMessage(&can_msg_send);
 }    
+
+void int0ISR() {
+  pulse_count++;
+}
+
+void set_motor_value(uint8 value) {
+  pwmWriteHR(MOTOR_PIN, value);
+  SetPinFrequencySafe(MOTOR_PIN, 1000);
+}
+
+void set_throttle(uint8 value) {
+  uint8 i = throttle_old;
+
+  // fancy statements to avoid having two separate loops
+  for (; i > value | i < value; throttle_old > value ? i-- : i++) {
+    set_motor_value(i);
+  }
+}
