@@ -2,15 +2,19 @@
 #include <mcp2515.h>
 #include "rear_board_pins.h"
 
+// setting the limits for important values
+typedef unsigned char uint8;
+typedef unsigned long uint32;
+
 MCP2515 mcp2515(CAN_PIN);
 
 struct can_frame can_msg_receive;
 struct can_frame can_msg_send;
 
-long throttle;
-long throttle_old;
+uint8 throttle;
+uint8 throttle_old;
 
-volatile int pulse_count = 0;
+volatile uint32 pulse_count = 0;
 
 /**
  * interrupt service routine for calculating pulses
@@ -26,7 +30,7 @@ void int0ISR() {
 /**
  * refactored function for sending pwm signal to motor
 */
-void set_motor_value(int value) {
+void set_motor_value(uint8 value) {
   pwmWriteHR(MOTOR_PIN, value);
   SetPinFrequencySafe(MOTOR_PIN, 1000);
 }
@@ -34,23 +38,23 @@ void set_motor_value(int value) {
 /**
  * increment or decrement to the desired value based on old throttle value
 */
-void set_throttle(int value) {
-  if (value >= 0 && value <= 255) {
-    int i = throttle_old;
+void set_throttle(uint8 value) {
+  uint8 i = throttle_old;
 
-    // fancy conditions to avoid having two separate loops
-    for (; i > value | i < value; throttle_old > value ? i-- : i++) {
-      set_motor_value(i);
-    }
+  // fancy statements to avoid having two separate loops
+  for (; i > value | i < value; throttle_old > value ? i-- : i++) {
+    set_motor_value(i);
   }
 }
 
 void setup() {
   // setting up CAN
   can_msg_send.can_id = 0x02;
-  can_msg_send.can_dlc = 2;
+  can_msg_send.can_dlc = 4;
   can_msg_send.data[0] = 0x00;
   can_msg_send.data[1] = 0x00;
+  can_msg_send.data[2] = 0x00;
+  can_msg_send.data[3] = 0x00;
 
   // do not change baud rate because it affects rosserial
   Serial.begin(57600);
@@ -72,7 +76,7 @@ void setup() {
 
 void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    throttle = (can_msg_receive.data[0] & 0xFF) | ((can_msg_receive.data[1] & 0xFF) << 8);
+    throttle = can_msg_receive.data[0];
 
     // if there's a difference between old and current throttle value
     // then sequence the pwm signal, if not, set signal right away
@@ -93,5 +97,8 @@ void loop() {
   // send pulse counts via CAN
   can_msg_send.data[0] = (pulse_count >> 0) & 0xFF;
   can_msg_send.data[1] = (pulse_count >> 8) & 0xFF;
+  can_msg_send.data[2] = (pulse_count >> 16) & 0xFF;
+  can_msg_send.data[3] = (pulse_count >> 24) & 0xFF;
+
   mcp2515.sendMessage(&can_msg_send);
 }    
