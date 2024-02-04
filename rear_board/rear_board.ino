@@ -27,7 +27,7 @@ void int0ISR() {
  * refactored function for sending pwm signal to motor
 */
 void set_motor_value(int value) {
-  pwmWriteHR(MOTOR_PIN, constrain(map(value, 0, 255, 0, 65535), 0, 65535));
+  pwmWriteHR(MOTOR_PIN, value);
   SetPinFrequencySafe(MOTOR_PIN, 1000);
 }
 
