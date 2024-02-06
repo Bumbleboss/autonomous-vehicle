@@ -14,12 +14,14 @@
 #define CAN_PIN 10
 #define MOTOR_PIN 9 
 
+#define TICKS_PER_METER 47
+
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
 ***********************************/
 
-typedef unsigned char uint8;
-typedef unsigned long uint32;
+typedef unsigned char uint8;    // 255
+typedef unsigned long uint32;   // 4,294,967,295
 
 struct can_frame can_msg_send;
 struct can_frame can_msg_receive;
