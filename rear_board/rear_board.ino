@@ -9,7 +9,7 @@ uint8 throttle_old;
 
 volatile uint32 pulse_count = 0;
 volatile uint32 displacement = 0;
-volatile uint8 speed = 0;
+volatile uint32 speed = 0;
 
 volatile uint32 start_time = 0;
 volatile uint32 current_time = 0;
@@ -18,12 +18,19 @@ volatile uint32 elapsed_time = 0;
 void setup() {
   // setting up CAN
   can_msg_send.can_id = 0x02;
-  can_msg_send.can_dlc = 5;
+  can_msg_send.can_dlc = 8;
+
+  // displacement value
   can_msg_send.data[0] = 0x00;
   can_msg_send.data[1] = 0x00;
   can_msg_send.data[2] = 0x00;
   can_msg_send.data[3] = 0x00;
+
+  // speed value
   can_msg_send.data[4] = 0x00;
+  can_msg_send.data[5] = 0x00;
+  can_msg_send.data[6] = 0x00;
+  can_msg_send.data[7] = 0x00;
 
   Serial.begin(115200);
   mcp2515.reset();
@@ -74,7 +81,10 @@ void loop() {
   if (elapsed_time > 1000) {
     can_msg_send.data[4] = 0;
   } else {
-    can_msg_send.data[4] = speed;
+    can_msg_send.data[4] = (speed >> 0) & 0xFF;
+    can_msg_send.data[5] = (speed >> 8) & 0xFF;
+    can_msg_send.data[6] = (speed >> 16) & 0xFF;
+    can_msg_send.data[7] = (speed >> 24) & 0xFF;
   }
 
   mcp2515.sendMessage(&can_msg_send);
@@ -107,16 +117,8 @@ void calculate_speed() {
   // the 100m value is to account for the first five digits
   // in the computed speed for maximum and minimum m/s speed
   speed = (100000000 / TICKS_PER_METER) / (elapsed_time);
-  
-  
+
+  // shifting start time to current time in order
+  // to get the next tick timeframe
   start_time = current_time;
-
-  // example of how receiver should deal with data
-  Serial.print("Displacement: ");
-  Serial.print(displacement / 1000.0, 2);
-  Serial.print("\n");
-
-  Serial.print("Speed: ");
-  Serial.print(speed * (1000 / 100000000.0), 2);
-  Serial.print("\n");
 }
