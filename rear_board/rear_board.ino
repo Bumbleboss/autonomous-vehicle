@@ -8,10 +8,12 @@ uint8 throttle;
 uint8 throttle_old;
 
 volatile uint32 pulse_count = 0;
-uint32 displacement = 0;
-uint8 speed = 0;
+volatile uint32 displacement = 0;
+volatile uint8 speed = 0;
 
-uint32 start_time = 0;
+volatile uint32 start_time = 0;
+volatile uint32 current_time = 0;
+volatile uint32 elapsed_time = 0;
 
 void setup() {
   // setting up CAN
@@ -23,8 +25,7 @@ void setup() {
   can_msg_send.data[3] = 0x00;
   can_msg_send.data[4] = 0x00;
 
-  // do not change baud rate because it affects rosserial
-  Serial.begin(57600);
+  Serial.begin(115200);
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS);
   mcp2515.setNormalMode();
@@ -38,7 +39,9 @@ void setup() {
 
   // setting up counter  
   pinMode(COUNTER_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(COUNTER_PIN), int0ISR, RISING); 
+  attachInterrupt(digitalPinToInterrupt(COUNTER_PIN), calculate_speed, RISING);
+
+  start_time = millis();
 }
 
 void loop() {
@@ -67,23 +70,15 @@ void loop() {
   can_msg_send.data[2] = (displacement >> 16) & 0xFF;
   can_msg_send.data[3] = (displacement >> 24) & 0xFF;
 
-  // Accident_LED speed (m/s) to CAN frame
-  can_msg_send.data[4] = speed;
+  // add speed (m/s) to CAN frame
+  if (elapsed_time > 1000) {
+    can_msg_send.data[4] = 0;
+  } else {
+    can_msg_send.data[4] = speed;
+  }
 
   mcp2515.sendMessage(&can_msg_send);
 }    
-
-void int0ISR() {
-  pulse_count++;
-
-  uint32 current_time = millis();
-  uint32 elapsed_time = current_time - start_time;
-
-  start_time = current_time;
-
-  displacement = pulse_count / TICKS_PER_METER;
-  speed = (TICKS_PER_METER / pulse_count) / (elapsed_time / 1000.0);
-}
 
 void set_motor_value(uint8 value) {
   pwmWriteHR(MOTOR_PIN, value);
@@ -97,4 +92,31 @@ void set_throttle(uint8 value) {
   for (; i > value | i < value; throttle_old > value ? i-- : i++) {
     set_motor_value(i);
   }
+}
+
+void calculate_speed() {
+  pulse_count++;
+
+  current_time = millis();
+  elapsed_time = current_time - start_time;
+
+  // we multiply by 1000 to account for first three digits
+  // digits after decimal in digit format
+  displacement = (pulse_count * 1000) / TICKS_PER_METER;
+
+  // the 100m value is to account for the first five digits
+  // in the computed speed for maximum and minimum m/s speed
+  speed = (100000000 / TICKS_PER_METER) / (elapsed_time);
+  
+  
+  start_time = current_time;
+
+  // example of how receiver should deal with data
+  Serial.print("Displacement: ");
+  Serial.print(displacement / 1000.0, 2);
+  Serial.print("\n");
+
+  Serial.print("Speed: ");
+  Serial.print(speed * (1000 / 100000000.0), 2);
+  Serial.print("\n");
 }

@@ -14,7 +14,8 @@
 #define CAN_PIN 10
 #define MOTOR_PIN 9 
 
-#define TICKS_PER_METER 47
+// the x.0 is for division computation
+#define TICKS_PER_METER 47.0
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
@@ -33,7 +34,7 @@ struct can_frame can_msg_receive;
 /**
  * interrupt service routine for calculating pulses
 */
-void int0ISR();
+void calculate_speed();
 
 /**
  * refactored function for sending pwm signal to motor
