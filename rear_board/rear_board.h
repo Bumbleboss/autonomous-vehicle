@@ -32,7 +32,7 @@ struct can_frame can_msg_receive;
 ***********************************/
 
 /**
- * interrupt service routine for calculating pulses
+ * interrupt service routine for calculating speed using pulses
 */
 void calculate_speed();
 
