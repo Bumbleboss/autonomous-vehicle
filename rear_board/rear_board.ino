@@ -79,7 +79,10 @@ void loop() {
 
   // add speed (m/s) to CAN frame
   if (elapsed_time > 1000) {
-    can_msg_send.data[4] = 0;
+    can_msg_send.data[4] = 0x00;
+    can_msg_send.data[5] = 0x00;
+    can_msg_send.data[6] = 0x00;
+    can_msg_send.data[7] = 0x00;
   } else {
     can_msg_send.data[4] = (speed >> 0) & 0xFF;
     can_msg_send.data[5] = (speed >> 8) & 0xFF;
