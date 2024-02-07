@@ -5,6 +5,10 @@
  * DEFINE PINS
 ***********************************/
 
+// bulbs
+#define LEFT_PIN 22
+#define RIGHT_PIN 23
+
 #define CAN_PIN 4
 #define PEDAL_PIN A6
 
@@ -12,9 +16,8 @@
  * DEFINE DATA TYPES AND STRUCT
 ***********************************/
 
-typedef unsigned char uint8;
-typedef unsigned int  uint16;
-typedef unsigned long uint32;
+typedef unsigned char uint8;    // 255
+typedef unsigned long uint32;   // 4,294,967,295
 
 struct can_frame can_msg_send;
 struct can_frame can_msg_receive;
