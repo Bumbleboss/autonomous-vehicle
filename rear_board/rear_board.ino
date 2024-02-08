@@ -1,5 +1,6 @@
-#include <PWM.h>
+#include <SPI.h>
 #include <mcp2515.h>
+#include <PWM.h>
 #include "rear_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
@@ -16,7 +17,6 @@ volatile uint32 current_time = 0;
 volatile uint32 elapsed_time = 0;
 
 void setup() {
-  // setting up CAN
   can_msg_send.can_id = 0x02;
   can_msg_send.can_dlc = 8;
 
@@ -38,7 +38,7 @@ void setup() {
   mcp2515.setNormalMode();
   InitTimersSafe();
 
-  // defining bulbs and motor pin
+  // defining light and motor pins
   pinMode(LEFT_PIN, OUTPUT);
   pinMode(RIGHT_PIN, OUTPUT);
   pinMode(BRAKES_PIN, OUTPUT);
@@ -66,18 +66,20 @@ void loop() {
     // save old throttle value for later computation
     throttle_old = throttle;
     
+    // set the bulbs based on statements from front board
     digitalWrite(LEFT_PIN, bitRead(can_msg_receive.data[2], 0));  
     digitalWrite(RIGHT_PIN, bitRead(can_msg_receive.data[2], 1));
     digitalWrite(BRAKES_PIN, !bitRead(can_msg_receive.data[2], 2));
   }
 
-  // add displacement (m) to CAN frame
+  // add displacement to CAN frame
   can_msg_send.data[0] = (displacement >> 0) & 0xFF;
   can_msg_send.data[1] = (displacement >> 8) & 0xFF;
   can_msg_send.data[2] = (displacement >> 16) & 0xFF;
   can_msg_send.data[3] = (displacement >> 24) & 0xFF;
 
-  // add speed (m/s) to CAN frame
+  // add speed to CAN frame,
+  // zero if elapsed time is above 1000
   if (elapsed_time > 1000) {
     can_msg_send.data[4] = 0x00;
     can_msg_send.data[5] = 0x00;
