@@ -21,7 +21,7 @@
  * DEFINE DATA TYPES AND STRUCT
 ***********************************/
 
-typedef unsigned char uint8;    // 255
+typedef unsigned int uint16;    // 65,535
 typedef unsigned long uint32;   // 4,294,967,295
 
 struct can_frame can_msg_send;
@@ -39,11 +39,11 @@ void calculate_speed();
 /**
  * refactored function for sending pwm signal to motor
 */
-void set_motor_value(uint8 value);
+void set_motor_value(uint16 value);
 
 /**
  * increment or decrement to the desired value based on old throttle value
 */
-void set_throttle(uint8 value);
+void set_throttle(uint16 value);
 
 #endif
