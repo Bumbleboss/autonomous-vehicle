@@ -119,6 +119,8 @@ void calculate_speed() {
   float displacement_f = pulse_count / TICKS_PER_METER;
   float speed_f = (1 / TICKS_PER_METER) / (elapsed_time / 1000000.0);
 
+  // we do this to shift the first two digits after decimal
+  // and send it via CAN
   displacement = displacement_f * 100;
   speed = speed_f * 100;
   
