@@ -17,9 +17,9 @@
         <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
 
         <!-- Gazebo  -->
-        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
             <arg name="world_name" default="$(arg world_name)"/>
-        </include>
+        </include> -->
 
         <!-- Load ros_controllers configuration parameters -->
         <rosparam file="$(find historia)/ackermann_plugin/config/ctrl_ackermann_steering_controller.yaml" command="load" ns="$(arg namespace)" />

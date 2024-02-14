@@ -1,10 +1,10 @@
 # Configuration for the ackermann_steering_controller.
-mobile_base_controller:
+ackermann_steering_controller:
     type: "ackermann_steering_controller/AckermannSteeringController"
 
     # Odometry related 
     publish_rate: 50                    # default: 1.0
-    open_loop: true
+    open_loop: false
 
     # Joints
     rear_wheel: 'rear_wheel_joint'
@@ -28,14 +28,14 @@ mobile_base_controller:
 
     # Transform from odom -> base_link
     enable_odom_tf: true
-    odom_frame_id: odom
+    odom_frame_id: '/odom'
 
     # Set to false if the motor driver provides velocity data. 
     estimate_velocity_from_position: true
 
     # Commands
     publish_cmd: true
-    allow_multiple_cmd_vel_publishers: true
+    allow_multiple_cmd_vel_publishers: false
 
     # Velocity and acceleration limits for the robot
     linear:

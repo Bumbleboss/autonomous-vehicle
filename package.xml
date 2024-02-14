@@ -73,6 +73,7 @@ for historia robot</p>
     <test_depend>std_srvs</test_depend>
     <test_depend>xacro</test_depend>
  <export>
-    <controller_interface plugin="${prefix}/ackermann_steering_controller_plugins.xml"/>
+    <!-- <controller_interface plugin="${prefix}/ackermann_steering_controller_plugins.xml"/> -->
+        <architecture_independent />
   </export>
 </package>
