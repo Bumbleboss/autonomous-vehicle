@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <mcp2515.h>
-#include <PID_v1.h>
+#include <ArduPID.h>
 #include <Wire.h>
 // #include <std_msgs/Float64.h>
 #include <ros.h>
@@ -16,6 +16,9 @@ uint16 pedal;
 uint32 displacement;
 uint32 speed;
 
+ArduPID myController;
+
+
 byte I2C_B1, I2C_B2;
 
 bool ACC_FLAG, ACC_LOOP;
@@ -28,9 +31,6 @@ double pid_input;
 double pid_desired;
 double pid_output;
 
-// (measured speed, output value, desired speed, k_p, k_i, k_d)
-PID pid(&pid_input, &pid_output, &pid_desired, 5, 0.1, 0.01, DIRECT);
-
 uint16 throttle_value;
 
 void setup() {
@@ -40,6 +40,10 @@ void setup() {
   can_msg_send.data[1] = 0x00; // throttle
   can_msg_send.data[2] = 0x00; // bulbs
 
+  myController.begin(&pid_input, &pid_output, &pid_desired, 10 , 0.001 , 0.005);
+  myController.setOutputLimits(0, 1024);
+
+
   Wire.begin(8); // join I2C bus with address #8
   Wire.onReceive(I2C_Read); // register event
 
@@ -48,7 +52,6 @@ void setup() {
   mcp2515.setBitrate(CAN_500KBPS);
   mcp2515.setNormalMode();
 
-  pid.SetMode(AUTOMATIC);
 }
 
 void loop() {
@@ -99,9 +102,9 @@ void loop() {
       bitWrite(can_msg_send.data[2], 1, 1);
 
       // replaced later with variable input
-      pid_desired = 1.2;
+      pid_desired = 1;
 
-      pid.Compute();
+      myController.compute();
       throttle_value = pid_output;
       break;
     default:
@@ -113,6 +116,9 @@ void loop() {
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
 
   mcp2515.sendMessage(&can_msg_send);
+  
+  Serial.println(pid_output);
+
 }
 
 void I2C_Read(int how_many) {
