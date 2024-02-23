@@ -40,7 +40,7 @@ void setup() {
   can_msg_send.data[1] = 0x00; // throttle
   can_msg_send.data[2] = 0x00; // bulbs
 
-  myController.begin(&pid_input, &pid_output, &pid_desired, 10 , 0.001 , 0.005);
+  myController.begin(&pid_input, &pid_output, &pid_desired, 160 , 0.005 , 0.005);
   myController.setOutputLimits(0, 1024);
 
 
