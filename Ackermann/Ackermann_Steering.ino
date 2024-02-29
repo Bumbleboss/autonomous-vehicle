@@ -21,12 +21,7 @@
 #include <ackermann_msgs/AckermannDriveStamped.h>
 #include <ackermann_msgs/AckermannDrive.h>
 
-const int STEERING_SERVO_PIN = 9;
-const int ESC_SERVO_PIN = 10;
-const int PIN_LED = 13;
 
-const int SDA_PIN = 18;
-const int SCL_PIN = 19;
 
 const float NEUTRAL_THROTTLE = 90;          /* Saved to edit later */
 const float NEUTRAL_STEERING_ANGLE = 90;    /* Saved to edit later */                
@@ -41,8 +36,6 @@ const float MAX_STEERING_ANGLE = 160;      // max steering angle (0-180)
 const float THROTTLE_FORWARD_OFFSET  = 7;  // Offset car's weight in throttle (m/s) * 10
 const float THROTTLE_BACKWARD_OFFSET = 28; // Offset car's weight in throttle (m/s) * 10
 
-const int   DELAY = 5;
-
 Servo steeringServo;
 Servo electronicSpeedController;
 
@@ -52,12 +45,6 @@ void ackermannCallback( const ackermann_msgs::AckermannDriveStamped & ackermann 
 // Throttle/Steering Command Subscriber
 ros::Subscriber<ackermann_msgs::AckermannDriveStamped> ackermannSubscriber("/ackermann_cmd", &ackermannCallback);
 ros::NodeHandle nodeHandle;
-
-// Vehicle State
-const int FORWARD    =  1;
-const int STOP       =  0;
-const int BACKWARD   = -1;
-int lastVehicleState = STOP;
 
 /**
  * Function:    ackermannCallback()
@@ -93,25 +80,13 @@ void ackermannCallback( const ackermann_msgs::AckermannDriveStamped & ackermann 
   
   // Check for allowed max throttle
   if( throttle > MAX_THROTTLE ) {
+    throttle = MAX_THROTTLE;
+  }
     // Check if up hill speed requested. request code: 999
-    if( ackermann.drive.speed == 999)
+    if( ackermann.drive.speed == 999){
       throttle = UPHILL_THROTTLE;
     else
       throttle = MAX_THROTTLE;
-  }
-  
-  // Switches ESC to backward mode if necessary
-  if( throttle <= NEUTRAL_THROTTLE - THROTTLE_BACKWARD_OFFSET ) {
-    if( lastVehicleState != BACKWARD ) {
-      electronicSpeedController.write( NEUTRAL_THROTTLE );
-      delay(50);
-      electronicSpeedController.write( MIN_THROTTLE );
-      delay(50);
-      electronicSpeedController.write( MIN_THROTTLE );
-      delay(50);
-      electronicSpeedController.write( NEUTRAL_THROTTLE );
-      delay(50);
-    }
   }
   
   // Update last vehicle's state
@@ -124,7 +99,6 @@ void ackermannCallback( const ackermann_msgs::AckermannDriveStamped & ackermann 
   
   // Send out steering and throttle commands
   steeringServo.write( steering_angle );
-  electronicSpeedController.write( throttle );
 }
 
 /**
@@ -135,17 +109,9 @@ void ackermannCallback( const ackermann_msgs::AckermannDriveStamped & ackermann 
  */
 void setup() {
   
-  // Connect steering and esc servo
-  steeringServo.attach( STEERING_SERVO_PIN );
-  electronicSpeedController.attach( ESC_SERVO_PIN );
-  
   // Initialize node and subscribe to ackermann msg
   nodeHandle.initNode();
   nodeHandle.subscribe( ackermannSubscriber );
-  
-  // Initialize steering and throttle to neutral
-  steeringServo.write( NEUTRAL_STEERING_ANGLE );
-  electronicSpeedController.write( NEUTRAL_THROTTLE );
   
   delay(1000);
   
@@ -160,5 +126,5 @@ void loop() {
   }
   
   nodeHandle.spinOnce();
-  delay(DELAY);
+  delay(5);
 }
