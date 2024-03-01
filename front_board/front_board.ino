@@ -83,6 +83,8 @@ void loop() {
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
   digitalWrite(ACC_LED, ACC_VAL);
 
+  led_controller();
+  
   if (ACC_VAL) {
     driving_mode = PID_MODE;
   } else {
@@ -143,7 +145,7 @@ void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
   }
 }
 
-void blink_led() {
+void led_controller() {
   // both left and right leds will be off
   if (!WARNING_VAL || !LEFT_WARNING_VAL || !RIGHT_WARNING_VAL) {
     digitalWrite(LEFT_WARNING_PIN, 0);

@@ -54,4 +54,9 @@ struct can_frame can_msg_receive;
 */
 void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE);
 
+/**
+ * control the front and rear left/right leds in specific modes
+*/
+void led_controller();
+
 #endif
