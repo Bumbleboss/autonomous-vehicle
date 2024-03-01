@@ -2,22 +2,15 @@
 #include <mcp2515.h>
 #include <ArduPID.h>
 #include <Wire.h>
-// #include <std_msgs/Float64.h>
-#include <ros.h>
-#include <ackermann_msgs/AckermannDriveStamped.h>
-#include <ackermann_msgs/AckermannDrive.h>
-
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
-
 
 uint16 pedal;
 uint32 displacement;
 uint32 speed;
 
-ArduPID myController;
-
+ArduPID pid_controller;
 
 byte I2C_B1, I2C_B2;
 
@@ -26,7 +19,7 @@ bool ACC_SW;
 
 DRIVING_MODES driving_mode;
 
-// PID parameters
+// PID speed parameters
 double pid_input;
 double pid_desired;
 double pid_output;
@@ -40,9 +33,8 @@ void setup() {
   can_msg_send.data[1] = 0x00; // throttle
   can_msg_send.data[2] = 0x00; // bulbs
 
-  myController.begin(&pid_input, &pid_output, &pid_desired, 160 , 0.005 , 0.005);
-  myController.setOutputLimits(0, 1024);
-
+  pid_controller.begin(&pid_input, &pid_output, &pid_desired, 160 , 0.005 , 0.005);
+  pid_controller.setOutputLimits(0, 1024);
 
   Wire.begin(8); // join I2C bus with address #8
   Wire.onReceive(I2C_Read); // register event
@@ -51,7 +43,6 @@ void setup() {
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS);
   mcp2515.setNormalMode();
-
 }
 
 void loop() {
@@ -104,7 +95,7 @@ void loop() {
       // replaced later with variable input
       pid_desired = 1;
 
-      myController.compute();
+      pid_controller.compute();
       throttle_value = pid_output;
       break;
     default:

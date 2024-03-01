@@ -9,4 +9,4 @@ Libraries required:
 Board: ATmega32 ([MightyCore](https://github.com/MCUdude/MightyCore))
 Libraries required:
 - MCP2515: https://github.com/autowp/arduino-mcp2515
-- PID_v1: https://github.com/br3ttb/Arduino-PID-Library
+- ArduPID: https://github.com/PowerBroker2/ArduPID
