@@ -5,19 +5,26 @@
  * DEFINE PINS
 ***********************************/
 
-#define CAN_PIN 4
 #define PEDAL_PIN A6
+#define CAN_PIN 4
+
 #define HORN_PIN 24
-
-#define ACC_LED 18
-
 #define HORN_I2C 7
+
 #define WARNING_I2C 5
+
+#define LEFT_WARNING_PIN 22
 #define LEFT_WARNING_I2C 3
+
+#define RIGHT_WARNING_PIN 23
 #define RIGHT_WARNING_I2C 4
+
+#define HEADLIGHTS_PIN 21
 #define HEADLIGHTS_I2C 6
 
+#define ACC_LED 18
 #define ACC_I2C 2
+
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT

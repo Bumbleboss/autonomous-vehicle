@@ -14,13 +14,12 @@ ArduPID pid_controller;
 
 byte I2C_B1, I2C_B2;
 
-bool HORN_SW;
-
-bool ACC_SW, ACC_FLAG, ACC_VAL;
+bool HORN_SW, HORN_FLAG, HORN_VAL;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
 bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
+bool ACC_SW, ACC_FLAG, ACC_VAL;
 
 DRIVING_MODES driving_mode;
 
@@ -50,6 +49,8 @@ void setup() {
   mcp2515.setNormalMode();
 
   pinMode(HORN_PIN, OUTPUT);
+  pinMode(HEADLIGHTS_PIN, OUTPUT);
+
 }
 
 void loop() {
@@ -65,31 +66,26 @@ void loop() {
   pid_input = speed / 100.0;
 
   // debouncing switches
+  debounce_switch(&HORN_SW, &HORN_FLAG, &HORN_VAL);
+  debounce_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
   debounce_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
 
+  digitalWrite(HORN_PIN, HORN_VAL);
+  digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
   digitalWrite(ACC_LED, ACC_VAL);
-  digitalWrite(HORN_PIN, HORN_SW);
 
   if (ACC_VAL) {
     driving_mode = PID_MODE;
   } else {
     driving_mode = PEDAL_MODE;
   }
-  
+
   switch (driving_mode) {
     case (PEDAL_MODE):
-      // left rear bulb and right rear bulb
-      bitWrite(can_msg_send.data[2], 0, 1);
-      bitWrite(can_msg_send.data[2], 1, 0);
-
       throttle_value = pedal;
       break;
     case (PID_MODE):
-      // left rear bulb and right rear bulb
-      bitWrite(can_msg_send.data[2], 0, 1);
-      bitWrite(can_msg_send.data[2], 1, 1);
-
-      // replaced later with variable input
+      // TODO: replace later with variable input
       pid_desired = 1;
 
       pid_controller.compute();
@@ -106,7 +102,6 @@ void loop() {
   mcp2515.sendMessage(&can_msg_send);
   
   Serial.println(pid_output);
-
 }
 
 void I2C_Read(int how_many) {
