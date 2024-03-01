@@ -12,6 +12,7 @@
 #define HORN_I2C 7
 
 #define WARNING_I2C 5
+#define WARNING_INTERVAL 1000
 
 #define LEFT_WARNING_PIN 22
 #define LEFT_WARNING_I2C 3
@@ -24,7 +25,6 @@
 
 #define ACC_LED 18
 #define ACC_I2C 2
-
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT

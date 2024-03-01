@@ -21,6 +21,9 @@ bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
 bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
 bool ACC_SW, ACC_FLAG, ACC_VAL;
 
+uint32 current_millis;
+uint32 previous_millis = 0;
+
 DRIVING_MODES driving_mode;
 
 // PID speed parameters
@@ -49,8 +52,9 @@ void setup() {
   mcp2515.setNormalMode();
 
   pinMode(HORN_PIN, OUTPUT);
+  pinMode(LEFT_WARNING_PIN, OUTPUT);
+  pinMode(RIGHT_WARNING_PIN, OUTPUT);
   pinMode(HEADLIGHTS_PIN, OUTPUT);
-
 }
 
 void loop() {
@@ -59,6 +63,8 @@ void loop() {
     speed = (can_msg_receive.data[4] & 0xFF) | ((can_msg_receive.data[5] & 0xFF) << 8) | ((can_msg_receive.data[6] & 0xFF) << 16) | ((can_msg_receive.data[7] & 0xFF) << 24);
   }
   
+  current_millis = millis();
+
   // map pedal resolution to motor
   pedal = analogRead(PEDAL_PIN);
 
@@ -67,6 +73,9 @@ void loop() {
 
   // debouncing switches
   debounce_switch(&HORN_SW, &HORN_FLAG, &HORN_VAL);
+  debounce_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
+  debounce_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
+  debounce_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
   debounce_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
   debounce_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
 
@@ -131,5 +140,41 @@ void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
 
   if (*SW_INPUT == 0) {
     *SW_FLAG = 1;
+  }
+}
+
+void blink_led() {
+  // both left and right leds will be off
+  if (!WARNING_VAL || !LEFT_WARNING_VAL || !RIGHT_WARNING_VAL) {
+    digitalWrite(LEFT_WARNING_PIN, 0);
+    bitWrite(can_msg_send.data[2], 0, 0);
+
+    digitalWrite(LEFT_WARNING_PIN, 0);
+    bitWrite(can_msg_send.data[2], 1, 0);
+
+    return;
+  }
+
+  if (current_millis - previous_millis > WARNING_INTERVAL) {
+    previous_millis = current_millis;
+
+    // both left and right leds will blink
+    if (WARNING_VAL) {
+      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
+      bitWrite(can_msg_send.data[2], 0, !digitalRead(LEFT_WARNING_PIN));
+
+      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
+      bitWrite(can_msg_send.data[2], 1, !digitalRead(LEFT_WARNING_PIN));
+
+    // left leds will blink
+    } else if (!WARNING_VAL && LEFT_WARNING_VAL && !RIGHT_WARNING_FLAG) {
+      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
+      bitWrite(can_msg_send.data[2], 0, !digitalRead(LEFT_WARNING_PIN));
+
+    // right leds will blink
+    } else if (!WARNING_VAL && !LEFT_WARNING_VAL && RIGHT_WARNING_FLAG) {
+      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
+      bitWrite(can_msg_send.data[2], 1, !digitalRead(LEFT_WARNING_PIN));
+    }
   }
 }
