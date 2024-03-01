@@ -96,7 +96,7 @@ void loop() {
       throttle_value = pedal;
       break;
     case (PID_MODE):
-      // TODO: replace later with variable input
+      // TODO: replace with variable input
       pid_desired = 1;
 
       pid_controller.compute();
@@ -111,8 +111,6 @@ void loop() {
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
 
   mcp2515.sendMessage(&can_msg_send);
-  
-  Serial.println(pid_output);
 }
 
 void I2C_Read(int how_many) {
