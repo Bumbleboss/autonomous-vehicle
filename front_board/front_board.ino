@@ -14,8 +14,13 @@ ArduPID pid_controller;
 
 byte I2C_B1, I2C_B2;
 
-bool ACC_FLAG, ACC_LOOP;
-bool ACC_SW;
+bool HORN_SW;
+
+bool ACC_SW, ACC_FLAG, ACC_VAL;
+bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
+bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
+bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
+bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
 
 DRIVING_MODES driving_mode;
 
@@ -43,6 +48,8 @@ void setup() {
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS);
   mcp2515.setNormalMode();
+
+  pinMode(HORN_PIN, OUTPUT);
 }
 
 void loop() {
@@ -57,28 +64,18 @@ void loop() {
   // convert speed to appropriate m/s double
   pid_input = speed / 100.0;
 
-  // acceleration switch debouncing
-  if (ACC_SW == 1 && ACC_FLAG == 1) {
-    delay(50);
+  // debouncing switches
+  debounce_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
 
-    if (ACC_SW == 1) {
-      ACC_LOOP = !ACC_LOOP;
-      ACC_FLAG = 0;
-    }
-  }
-  
-  if (ACC_SW == 0) {
-    ACC_FLAG = 1;
-  }
+  digitalWrite(ACC_LED, ACC_VAL);
+  digitalWrite(HORN_PIN, HORN_SW);
 
-  if (ACC_LOOP) {
+  if (ACC_VAL) {
     driving_mode = PID_MODE;
   } else {
     driving_mode = PEDAL_MODE;
   }
-
-  digitalWrite(ACC_LED, ACC_LOOP);
-
+  
   switch (driving_mode) {
     case (PEDAL_MODE):
       // left rear bulb and right rear bulb
@@ -116,5 +113,28 @@ void I2C_Read(int how_many) {
   I2C_B1 = Wire.read();
   I2C_B2 = Wire.read();
 
-  ACC_SW = bitRead(I2C_B2, 2);
+  // left board switches
+  HORN_SW           = bitRead(I2C_B1, HORN_I2C);
+  WARNING_SW        = bitRead(I2C_B1, WARNING_I2C);
+  LEFT_WARNING_SW   = bitRead(I2C_B1, LEFT_WARNING_I2C);
+  RIGHT_WARNING_SW  = bitRead(I2C_B1, RIGHT_WARNING_I2C);
+  HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
+
+  // right board switches
+  ACC_SW            = bitRead(I2C_B2, ACC_I2C);
+}
+
+void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
+  if (*SW_INPUT == 1 && *SW_FLAG == 1) {
+    delay(50);
+
+    if (*SW_INPUT == 1) {
+      *SW_VALUE = (!*SW_VALUE);
+      *SW_FLAG = 0;
+    }
+  }
+
+  if (*SW_INPUT == 0) {
+    *SW_FLAG = 1;
+  }
 }
