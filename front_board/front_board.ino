@@ -71,12 +71,12 @@ void loop() {
   // convert speed to appropriate m/s double
   pid_input = speed / 100.0;
 
-  // debouncing switches
-  debounce_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
-  debounce_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
-  debounce_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
-  debounce_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
-  debounce_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
+  // specific switches use pull-down logic
+  pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
+  pull_down_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
+  pull_down_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
+  pull_down_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
+  pull_down_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
 
   digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
