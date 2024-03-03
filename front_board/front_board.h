@@ -47,12 +47,12 @@ struct can_frame can_msg_receive;
 ***********************************/
 
 /**
- * pull-down switch functionality w/debouncing
+ * pull-down switch functionality with debouncing
  * - SW_INPUT: switch input value
- * - SW_FLAG: fallback condition flag
- * - SW_VALUE: the filtered value to check state of condition
+ * - SW_FLAG: previous state condition
+ * - SW_VALUE: stored value that will be used for our computations 
 */
-void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE);
+void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE);
 
 /**
  * control the front and rear left/right leds in specific modes

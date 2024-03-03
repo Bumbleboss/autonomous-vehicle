@@ -127,7 +127,7 @@ void I2C_Read(int how_many) {
   ACC_SW            = bitRead(I2C_B2, ACC_I2C);
 }
 
-void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
+void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
   if (*SW_INPUT == 1 && *SW_FLAG == 1) {
     delay(50);
 
