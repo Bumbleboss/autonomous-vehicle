@@ -12,13 +12,13 @@
 #define HORN_I2C 7
 
 #define WARNING_I2C 5
-#define WARNING_INTERVAL 1000
+#define WARNING_INTERVAL 600
 
 #define LEFT_WARNING_PIN 22
-#define LEFT_WARNING_I2C 3
+#define LEFT_WARNING_I2C 4
 
 #define RIGHT_WARNING_PIN 23
-#define RIGHT_WARNING_I2C 4
+#define RIGHT_WARNING_I2C 3
 
 #define HEADLIGHTS_PIN 21
 #define HEADLIGHTS_I2C 6
@@ -47,7 +47,7 @@ struct can_frame can_msg_receive;
 ***********************************/
 
 /**
- * debounce a switch using three different variables
+ * pull-down switch functionality w/debouncing
  * - SW_INPUT: switch input value
  * - SW_FLAG: fallback condition flag
  * - SW_VALUE: the filtered value to check state of condition

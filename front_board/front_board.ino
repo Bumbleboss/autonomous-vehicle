@@ -14,7 +14,7 @@ ArduPID pid_controller;
 
 byte I2C_B1, I2C_B2;
 
-bool HORN_SW, HORN_FLAG, HORN_VAL;
+bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
@@ -72,14 +72,13 @@ void loop() {
   pid_input = speed / 100.0;
 
   // debouncing switches
-  debounce_switch(&HORN_SW, &HORN_FLAG, &HORN_VAL);
   debounce_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
   debounce_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
   debounce_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
   debounce_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
   debounce_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
 
-  digitalWrite(HORN_PIN, HORN_VAL);
+  digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
   digitalWrite(ACC_LED, ACC_VAL);
 
@@ -145,36 +144,45 @@ void debounce_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
 
 void led_controller() {
   // both left and right leds will be off
-  if (!WARNING_VAL || !LEFT_WARNING_VAL || !RIGHT_WARNING_VAL) {
+  if (!WARNING_VAL && !LEFT_WARNING_VAL && !RIGHT_WARNING_VAL) {
     digitalWrite(LEFT_WARNING_PIN, 0);
     bitWrite(can_msg_send.data[2], 0, 0);
 
-    digitalWrite(LEFT_WARNING_PIN, 0);
+    digitalWrite(RIGHT_WARNING_PIN, 0);
     bitWrite(can_msg_send.data[2], 1, 0);
 
     return;
   }
+
+  bool left_warn = !digitalRead(LEFT_WARNING_PIN);
+  bool right_warn = !digitalRead(RIGHT_WARNING_PIN);
 
   if (current_millis - previous_millis > WARNING_INTERVAL) {
     previous_millis = current_millis;
 
     // both left and right leds will blink
     if (WARNING_VAL) {
-      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
-      bitWrite(can_msg_send.data[2], 0, !digitalRead(LEFT_WARNING_PIN));
+      digitalWrite(LEFT_WARNING_PIN, left_warn);
+      bitWrite(can_msg_send.data[2], 0, left_warn);
 
-      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
-      bitWrite(can_msg_send.data[2], 1, !digitalRead(LEFT_WARNING_PIN));
+      digitalWrite(RIGHT_WARNING_PIN, right_warn);
+      bitWrite(can_msg_send.data[2], 1, right_warn);
 
     // left leds will blink
-    } else if (!WARNING_VAL && LEFT_WARNING_VAL && !RIGHT_WARNING_FLAG) {
-      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
-      bitWrite(can_msg_send.data[2], 0, !digitalRead(LEFT_WARNING_PIN));
+    } else if (!WARNING_VAL && LEFT_WARNING_VAL && !RIGHT_WARNING_VAL) {
+      digitalWrite(LEFT_WARNING_PIN, left_warn);
+      bitWrite(can_msg_send.data[2], 0, left_warn);
+
+      digitalWrite(RIGHT_WARNING_PIN, 0);
+      bitWrite(can_msg_send.data[2], 1, 0);
 
     // right leds will blink
-    } else if (!WARNING_VAL && !LEFT_WARNING_VAL && RIGHT_WARNING_FLAG) {
-      digitalWrite(LEFT_WARNING_PIN, !digitalRead(LEFT_WARNING_PIN));
-      bitWrite(can_msg_send.data[2], 1, !digitalRead(LEFT_WARNING_PIN));
+    } else if (!WARNING_VAL && !LEFT_WARNING_VAL && RIGHT_WARNING_VAL) {
+      digitalWrite(LEFT_WARNING_PIN, 0);
+      bitWrite(can_msg_send.data[2], 0, 0);
+
+      digitalWrite(RIGHT_WARNING_PIN, right_warn);
+      bitWrite(can_msg_send.data[2], 1, right_warn);
     }
   }
 }
