@@ -26,6 +26,9 @@
 #define ACC_LED 18
 #define ACC_I2C 2
 
+#define CONS_LED 15
+#define CONS_I2C 3
+
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
 ***********************************/
@@ -34,9 +37,10 @@ typedef unsigned int uint16;    // 65,535
 typedef unsigned long uint32;   // 4,294,967,295
 
 typedef enum {
-  PEDAL_MODE,
+  MANUAL_MODE,
   PID_MODE,
-  AUTONOMOUS_MODE
+  AUTONOMOUS_MODE,
+  CONST_SPEED_MODE
 } DRIVING_MODES;
 
 struct can_frame can_msg_send;

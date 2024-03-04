@@ -19,7 +19,9 @@ bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
 bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
+
 bool ACC_SW, ACC_FLAG, ACC_VAL;
+bool CONS_SW, CONS_FLAG, CONS_VAL;
 
 uint32 current_millis;
 uint32 previous_millis = 0;
@@ -76,22 +78,35 @@ void loop() {
   pull_down_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
   pull_down_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
   pull_down_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
+
   pull_down_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
+  pull_down_switch(&CONS_SW, &CONS_FLAG, &CONS_VAL);
 
   digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
-  digitalWrite(ACC_LED, ACC_VAL);
+
+  digitalWrite(ACC_LED, (driving_mode == PID_MODE));
+  digitalWrite(CONS_LED, (driving_mode == CONST_SPEED_MODE));
 
   led_controller();
   
   if (ACC_VAL) {
     driving_mode = PID_MODE;
+
+    CONS_VAL = 0;
+  } else if (CONS_VAL) {
+    driving_mode = CONST_SPEED_MODE;
+
+    ACC_VAL = 0;
   } else {
-    driving_mode = PEDAL_MODE;
+    driving_mode = MANUAL_MODE;
+
+    CONS_VAL = 0;
+    ACC_VAL = 0;
   }
 
   switch (driving_mode) {
-    case (PEDAL_MODE):
+    case (MANUAL_MODE):
       throttle_value = pedal;
       break;
     case (PID_MODE):
@@ -100,6 +115,9 @@ void loop() {
 
       pid_controller.compute();
       throttle_value = pid_output;
+      break;
+    case (CONST_SPEED_MODE):
+      throttle_value = 260;
       break;
     default:
       throttle_value = pedal;
@@ -125,6 +143,7 @@ void I2C_Read(int how_many) {
 
   // right board switches
   ACC_SW            = bitRead(I2C_B2, ACC_I2C);
+  CONS_SW           = bitRead(I2C_B2, CONS_I2C);
 }
 
 void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
