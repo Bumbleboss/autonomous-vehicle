@@ -10,3 +10,4 @@ Board: ATmega32 ([MightyCore](https://github.com/MCUdude/MightyCore))
 Libraries required:
 - MCP2515: https://github.com/autowp/arduino-mcp2515
 - ArduPID: https://github.com/PowerBroker2/ArduPID
+- FireTimer: https://github.com/PowerBroker2/FireTimer
