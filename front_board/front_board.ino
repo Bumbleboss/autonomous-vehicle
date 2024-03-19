@@ -99,6 +99,7 @@ void loop() {
   digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
+  // enable switch led for it's relative mode
   digitalWrite(AUTO_LED, driving_mode == AUTONOMOUS_MODE);
   digitalWrite(PID_LED, driving_mode == PID_MODE);
   digitalWrite(CONS_LED, driving_mode == CONST_SPEED_MODE);
@@ -258,7 +259,7 @@ void steering_calibration() {
       break;
     case (CALIBRATE_CENTER):
       stepper_controller.moveTo(-1 * STEPPER_STEERING_CENTER);
-      stepper_controller.setSpeed(-1 * STEPPER_SPEED);
+      stepper_controller.setSpeed(STEPPER_SPEED);
       stepper_controller.runSpeedToPosition();
 
       if (stepper_controller.distanceToGo() == 0) {
