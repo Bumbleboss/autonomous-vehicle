@@ -175,7 +175,7 @@ void I2C_Read(int how_many) {
   HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
 
   // right board switches
-  AUTO_SW            = bitRead(I2C_B2, AUTO_I2C);
+  AUTO_SW           = bitRead(I2C_B2, AUTO_I2C);
   PID_SW            = bitRead(I2C_B2, PID_I2C);
   CONS_SW           = bitRead(I2C_B2, CONS_I2C);
 }
