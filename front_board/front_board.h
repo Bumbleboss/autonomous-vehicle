@@ -58,7 +58,7 @@ typedef enum {
   PID_MODE,
   AUTONOMOUS_MODE,
   CONST_SPEED_MODE,
-  CALIBRATE_MODE
+  CALIBRATION_MODE
 } DRIVING_MODES;
 
 typedef enum {
@@ -66,7 +66,7 @@ typedef enum {
   CALIBRATE_RESET_POSITION,
   CALIBRATE_CENTER,
   CALIBRATE_END
-} CALIBRATE_MODES;
+} CALIBRATION_PHASES;
 
 struct can_frame can_msg_send;
 struct can_frame can_msg_receive;

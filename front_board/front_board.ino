@@ -29,7 +29,7 @@ uint32 current_millis;
 uint32 previous_millis = 0;
 
 DRIVING_MODES driving_mode;
-CALIBRATE_MODES calibrate_mode;
+CALIBRATION_PHASES calibration_phase;
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
@@ -241,21 +241,21 @@ void warning_led_controller() {
 }
 
 void steering_calibration() {
-  if (calibrate_mode == CALIBRATE_END) {
+  if (calibration_phase == CALIBRATE_END) {
     return;
   }
 
-  switch(calibrate_mode) {
+  switch(calibration_phase) {
     case (CALIBRATE_INTERRUPT):
       stepper_controller.stop();
       delay(2000);
 
-      calibrate_mode = CALIBRATE_RESET_POSITION;
+      calibration_phase = CALIBRATE_RESET_POSITION;
       break;
     case (CALIBRATE_RESET_POSITION):
       stepper_controller.setCurrentPosition(0);
 
-      calibrate_mode = CALIBRATE_CENTER;
+      calibration_phase = CALIBRATE_CENTER;
       break;
     case (CALIBRATE_CENTER):
       stepper_controller.moveTo(-1 * STEPPER_STEERING_CENTER);
@@ -264,7 +264,7 @@ void steering_calibration() {
 
       if (stepper_controller.distanceToGo() == 0) {
         stepper_controller.setCurrentPosition(0);
-        calibrate_mode = CALIBRATE_END;
+        calibration_phase = CALIBRATE_END;
       }
 
       break;
@@ -276,5 +276,5 @@ void steering_calibration() {
 }
 
 void steering_limit_interrupt() {
-  calibrate_mode = CALIBRATE_INTERRUPT;
+  calibration_phase = CALIBRATE_INTERRUPT;
 }
