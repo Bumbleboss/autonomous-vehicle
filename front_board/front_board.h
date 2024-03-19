@@ -23,11 +23,28 @@
 #define HEADLIGHTS_PIN 21
 #define HEADLIGHTS_I2C 6
 
-#define ACC_LED 18
-#define ACC_I2C 2
+// bottom-last-right
+#define PID_LED 18
+#define PID_I2C 2
 
+// bottom-mid
+#define AUTO_LED 19
+#define AUTO_I2C 1
+
+// bottom-last-left
 #define CONS_LED 15
 #define CONS_I2C 3
+
+
+// stepper motor (steering) config
+#define STEPPER_PIN 14
+#define STEPPER_DIR_PIN 13
+#define STEPPER_ENA_PIN 12
+#define STEERING_LIMIT_PIN 11
+
+#define STEPPER_SPEED 1000
+#define STEPPER_REVOLUTION 1000 
+#define STEPPER_STEERING_CENTER 4300
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
@@ -40,8 +57,16 @@ typedef enum {
   MANUAL_MODE,
   PID_MODE,
   AUTONOMOUS_MODE,
-  CONST_SPEED_MODE
+  CONST_SPEED_MODE,
+  CALIBRATE_MODE
 } DRIVING_MODES;
+
+typedef enum {
+  CALIBRATE_INTERRUPT = 1,
+  CALIBRATE_RESET_POSITION,
+  CALIBRATE_CENTER,
+  CALIBRATE_END
+} CALIBRATE_MODES;
 
 struct can_frame can_msg_send;
 struct can_frame can_msg_receive;
@@ -61,6 +86,20 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE);
 /**
  * control the front and rear left/right leds in specific modes
 */
-void led_controller();
+void warning_led_controller();
 
+/**
+ * calibrate steering motor to its center
+ * 1. keep turning the stepper until an interrupt from limit switch happens
+ * 2. stop the motor and wait 2 seconds
+ * 3. reset the stepper position to the limit switch position
+ * 4. reverse the steering direction to the center (the center is based on practical experiment)
+ * 5. once the distance to the center is achieved, break from the calibration function entirely
+*/
+void steering_calibration();
+
+/**
+ * method called when limit switches for the steering is triggered
+*/
+void steering_limit_interrupt();
 #endif

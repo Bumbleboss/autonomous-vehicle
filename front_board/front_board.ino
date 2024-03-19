@@ -2,6 +2,7 @@
 #include <mcp2515.h>
 #include <ArduPID.h>
 #include <Wire.h>
+#include <AccelStepper.h>
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
@@ -20,13 +21,17 @@ bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
 bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
 
-bool ACC_SW, ACC_FLAG, ACC_VAL;
+bool PID_SW, PID_FLAG, PID_VAL;
+bool AUTO_SW, AUTO_FLAG, AUTO_VAL;
 bool CONS_SW, CONS_FLAG, CONS_VAL;
 
 uint32 current_millis;
 uint32 previous_millis = 0;
 
 DRIVING_MODES driving_mode;
+CALIBRATE_MODES calibrate_mode;
+
+AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
 // PID speed parameters
 double pid_input;
@@ -57,6 +62,14 @@ void setup() {
   pinMode(LEFT_WARNING_PIN, OUTPUT);
   pinMode(RIGHT_WARNING_PIN, OUTPUT);
   pinMode(HEADLIGHTS_PIN, OUTPUT);
+  pinMode(STEPPER_ENA_PIN, OUTPUT);
+
+  // limit swtich pin definition and interrupt setup
+  pinMode(STEERING_LIMIT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, FALLING);
+
+  // set max speed for stepper to move on any condition
+  stepper_controller.setMaxSpeed(STEPPER_SPEED);
 }
 
 void loop() {
@@ -79,30 +92,43 @@ void loop() {
   pull_down_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
   pull_down_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
 
-  pull_down_switch(&ACC_SW, &ACC_FLAG, &ACC_VAL);
+  pull_down_switch(&PID_SW, &PID_FLAG, &PID_VAL);
+  pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTO_VAL);
   pull_down_switch(&CONS_SW, &CONS_FLAG, &CONS_VAL);
 
   digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
-  digitalWrite(ACC_LED, (driving_mode == PID_MODE));
-  digitalWrite(CONS_LED, (driving_mode == CONST_SPEED_MODE));
+  digitalWrite(AUTO_LED, driving_mode == AUTONOMOUS_MODE);
+  digitalWrite(PID_LED, driving_mode == PID_MODE);
+  digitalWrite(CONS_LED, driving_mode == CONST_SPEED_MODE);
 
-  led_controller();
+  // disable stepper's holding torque when its not autonomous mode
+  digitalWrite(STEPPER_ENA_PIN, driving_mode != AUTONOMOUS_MODE);
+
+  warning_led_controller();
   
-  if (ACC_VAL) {
+  if (PID_VAL) {
     driving_mode = PID_MODE;
 
+    AUTO_VAL = 0;
     CONS_VAL = 0;
   } else if (CONS_VAL) {
     driving_mode = CONST_SPEED_MODE;
 
-    ACC_VAL = 0;
+    PID_VAL = 0;
+    AUTO_VAL = 0;
+  } else if (AUTO_VAL) {
+    driving_mode = AUTONOMOUS_MODE;
+
+    PID_VAL = 0;
+    CONS_VAL = 0;
   } else {
     driving_mode = MANUAL_MODE;
 
+    PID_VAL = 0;
+    AUTO_VAL = 0;
     CONS_VAL = 0;
-    ACC_VAL = 0;
   }
 
   switch (driving_mode) {
@@ -114,10 +140,16 @@ void loop() {
       pid_desired = 1;
 
       pid_controller.compute();
-      throttle_value = pid_output;
+      // throttle_value = pid_output;
+      throttle_value = 0;
       break;
     case (CONST_SPEED_MODE):
-      throttle_value = 260;
+      // throttle_value = 260;
+      throttle_value = 0;
+      break;
+
+    case (AUTONOMOUS_MODE):
+      steering_calibration();
       break;
     default:
       throttle_value = pedal;
@@ -142,7 +174,8 @@ void I2C_Read(int how_many) {
   HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
 
   // right board switches
-  ACC_SW            = bitRead(I2C_B2, ACC_I2C);
+  AUTO_SW            = bitRead(I2C_B2, AUTO_I2C);
+  PID_SW            = bitRead(I2C_B2, PID_I2C);
   CONS_SW           = bitRead(I2C_B2, CONS_I2C);
 }
 
@@ -161,7 +194,7 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
   }
 }
 
-void led_controller() {
+void warning_led_controller() {
   // both left and right leds will be off
   if (!WARNING_VAL && !LEFT_WARNING_VAL && !RIGHT_WARNING_VAL) {
     digitalWrite(LEFT_WARNING_PIN, 0);
@@ -204,4 +237,43 @@ void led_controller() {
       bitWrite(can_msg_send.data[2], 1, right_warn);
     }
   }
+}
+
+void steering_calibration() {
+  if (calibrate_mode == CALIBRATE_END) {
+    return;
+  }
+
+  switch(calibrate_mode) {
+    case (CALIBRATE_INTERRUPT):
+      stepper_controller.stop();
+      delay(2000);
+
+      calibrate_mode = CALIBRATE_RESET_POSITION;
+      break;
+    case (CALIBRATE_RESET_POSITION):
+      stepper_controller.setCurrentPosition(0);
+
+      calibrate_mode = CALIBRATE_CENTER;
+      break;
+    case (CALIBRATE_CENTER):
+      stepper_controller.moveTo(-1 * STEPPER_STEERING_CENTER);
+      stepper_controller.setSpeed(-1 * STEPPER_SPEED);
+      stepper_controller.runSpeedToPosition();
+
+      if (stepper_controller.distanceToGo() == 0) {
+        stepper_controller.setCurrentPosition(0);
+        calibrate_mode = CALIBRATE_END;
+      }
+
+      break;
+    default:
+      stepper_controller.setSpeed(STEPPER_SPEED);
+      stepper_controller.runSpeed();
+      break;
+  }
+}
+
+void steering_limit_interrupt() {
+  calibrate_mode = CALIBRATE_INTERRUPT;
 }
