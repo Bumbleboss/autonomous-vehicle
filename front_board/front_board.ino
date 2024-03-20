@@ -25,6 +25,8 @@ bool PID_SW, PID_FLAG, PID_VAL;
 bool AUTO_SW, AUTO_FLAG, AUTO_VAL;
 bool CONS_SW, CONS_FLAG, CONS_VAL;
 
+bool limit_switch_warning = LOW;
+
 uint32 current_millis;
 uint32 previous_millis = 0;
 
@@ -78,9 +80,10 @@ void loop() {
     speed = (can_msg_receive.data[4] & 0xFF) | ((can_msg_receive.data[5] & 0xFF) << 8) | ((can_msg_receive.data[6] & 0xFF) << 16) | ((can_msg_receive.data[7] & 0xFF) << 24);
   }
 
-  if (limit_switch_warning) {
+  // stop stepper from reaching limits during a non calibration phase
+  if (limit_switch_warning && (!calibration_phase || calibration_phase == CALIBRATE_END)) {
     stepper_controller.stop();
-    limit_switch_warning = 0;
+    limit_switch_warning = HIGH;
   }
   
   current_millis = millis();
@@ -119,22 +122,22 @@ void loop() {
   if (PID_VAL) {
     driving_mode = PID_MODE;
 
-    AUTO_VAL = 0;
-    CONS_VAL = 0;
+    AUTO_VAL = LOW;
+    CONS_VAL = LOW;
   }
   
   if (AUTO_VAL) {
     driving_mode = AUTONOMOUS_MODE;
 
-    PID_VAL = 0;
-    CONS_VAL = 0;
+    PID_VAL = LOW;
+    CONS_VAL = LOW;
   }
 
   if (CONS_VAL) {
     driving_mode = CONST_SPEED_MODE;
 
-    PID_VAL = 0;
-    AUTO_VAL = 0;
+    PID_VAL = LOW;
+    AUTO_VAL = LOW;
   }
 
   if (!PID_VAL && !CONS_VAL && !AUTO_VAL) {
@@ -189,28 +192,28 @@ void I2C_Read(int how_many) {
 }
 
 void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
-  if (*SW_INPUT == 1 && *SW_FLAG == 1) {
+  if (*SW_INPUT == HIGH && *SW_FLAG == HIGH) {
     delay(50);
 
-    if (*SW_INPUT == 1) {
+    if (*SW_INPUT == HIGH) {
       *SW_VALUE = (!*SW_VALUE);
-      *SW_FLAG = 0;
+      *SW_FLAG = LOW;
     }
   }
 
   if (*SW_INPUT == 0) {
-    *SW_FLAG = 1;
+    *SW_FLAG = HIGH;
   }
 }
 
 void warning_led_controller() {
   // both left and right leds will be off
   if (!WARNING_VAL && !LEFT_WARNING_VAL && !RIGHT_WARNING_VAL) {
-    digitalWrite(LEFT_WARNING_PIN, 0);
-    bitWrite(can_msg_send.data[2], 0, 0);
+    digitalWrite(LEFT_WARNING_PIN, LOW);
+    bitWrite(can_msg_send.data[2], 0, LOW);
 
-    digitalWrite(RIGHT_WARNING_PIN, 0);
-    bitWrite(can_msg_send.data[2], 1, 0);
+    digitalWrite(RIGHT_WARNING_PIN, LOW);
+    bitWrite(can_msg_send.data[2], 1, LOW);
 
     return;
   }
@@ -234,13 +237,13 @@ void warning_led_controller() {
       digitalWrite(LEFT_WARNING_PIN, left_warn);
       bitWrite(can_msg_send.data[2], 0, left_warn);
 
-      digitalWrite(RIGHT_WARNING_PIN, 0);
-      bitWrite(can_msg_send.data[2], 1, 0);
+      digitalWrite(RIGHT_WARNING_PIN, LOW);
+      bitWrite(can_msg_send.data[2], 1, LOW);
 
     // right leds will blink
     } else if (!WARNING_VAL && !LEFT_WARNING_VAL && RIGHT_WARNING_VAL) {
-      digitalWrite(LEFT_WARNING_PIN, 0);
-      bitWrite(can_msg_send.data[2], 0, 0);
+      digitalWrite(LEFT_WARNING_PIN, LOW);
+      bitWrite(can_msg_send.data[2], 0, LOW);
 
       digitalWrite(RIGHT_WARNING_PIN, right_warn);
       bitWrite(can_msg_send.data[2], 1, right_warn);
@@ -285,5 +288,5 @@ void steering_calibration() {
 
 void steering_limit_interrupt() {
   calibration_phase = CALIBRATE_INTERRUPT;
-  limit_switch_warning = 1;
+  limit_switch_warning = HIGH;
 }
