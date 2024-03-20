@@ -108,23 +108,29 @@ void loop() {
   digitalWrite(STEPPER_ENA_PIN, driving_mode != AUTONOMOUS_MODE);
 
   warning_led_controller();
-  
+
   if (PID_VAL) {
     driving_mode = PID_MODE;
 
     AUTO_VAL = 0;
     CONS_VAL = 0;
-  } else if (CONS_VAL) {
-    driving_mode = CONST_SPEED_MODE;
-
-    PID_VAL = 0;
-    AUTO_VAL = 0;
-  } else if (AUTO_VAL) {
+  }
+  
+  if (AUTO_VAL) {
     driving_mode = AUTONOMOUS_MODE;
 
     PID_VAL = 0;
     CONS_VAL = 0;
-  } else {
+  }
+
+  if (CONS_VAL) {
+    driving_mode = CONST_SPEED_MODE;
+
+    PID_VAL = 0;
+    AUTO_VAL = 0;
+  }
+
+  if (!PID_VAL && !CONS_VAL && !AUTO_VAL) {
     driving_mode = MANUAL_MODE;
 
     PID_VAL = 0;
@@ -148,7 +154,6 @@ void loop() {
       // throttle_value = 260;
       throttle_value = 0;
       break;
-
     case (AUTONOMOUS_MODE):
       steering_calibration();
       break;
