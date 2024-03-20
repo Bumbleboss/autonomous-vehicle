@@ -25,6 +25,8 @@ bool PID_SW, PID_FLAG, PID_VAL;
 bool AUTO_SW, AUTO_FLAG, AUTO_VAL;
 bool CONS_SW, CONS_FLAG, CONS_VAL;
 
+bool limit_switch_warning = 0;
+
 uint32 current_millis;
 uint32 previous_millis = 0;
 
@@ -109,6 +111,8 @@ void loop() {
 
   warning_led_controller();
 
+  // check which switch is pressed change driving mode accordingly
+  // it will shut other modes as only on mode should be activated at once
   if (PID_VAL) {
     driving_mode = PID_MODE;
 
@@ -132,10 +136,6 @@ void loop() {
 
   if (!PID_VAL && !CONS_VAL && !AUTO_VAL) {
     driving_mode = MANUAL_MODE;
-
-    PID_VAL = 0;
-    AUTO_VAL = 0;
-    CONS_VAL = 0;
   }
 
   switch (driving_mode) {
@@ -282,4 +282,5 @@ void steering_calibration() {
 
 void steering_limit_interrupt() {
   calibration_phase = CALIBRATE_INTERRUPT;
+  limit_switch_warning = 1;
 }
