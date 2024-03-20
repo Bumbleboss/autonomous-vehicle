@@ -25,8 +25,6 @@ bool PID_SW, PID_FLAG, PID_VAL;
 bool AUTO_SW, AUTO_FLAG, AUTO_VAL;
 bool CONS_SW, CONS_FLAG, CONS_VAL;
 
-bool limit_switch_warning = 0;
-
 uint32 current_millis;
 uint32 previous_millis = 0;
 
@@ -78,6 +76,11 @@ void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
     displacement = (can_msg_receive.data[0] & 0xFF) | ((can_msg_receive.data[1] & 0xFF) << 8) | ((can_msg_receive.data[2] & 0xFF) << 16) | ((can_msg_receive.data[3] & 0xFF) << 24);
     speed = (can_msg_receive.data[4] & 0xFF) | ((can_msg_receive.data[5] & 0xFF) << 8) | ((can_msg_receive.data[6] & 0xFF) << 16) | ((can_msg_receive.data[7] & 0xFF) << 24);
+  }
+
+  if (limit_switch_warning) {
+    stepper_controller.stop();
+    limit_switch_warning = 0;
   }
   
   current_millis = millis();
