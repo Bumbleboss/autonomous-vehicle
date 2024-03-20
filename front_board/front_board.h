@@ -44,7 +44,11 @@
 
 #define STEPPER_SPEED 1000
 #define STEPPER_REVOLUTION 1000 
+#define STEPPER_GEAR_RATIO 2
 #define STEPPER_STEERING_CENTER 4300
+
+// ackermann config
+#define ACKERMANN_MAX_SPEED 20
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
@@ -102,4 +106,6 @@ void steering_calibration();
  * method called when limit switches for the steering is triggered
 */
 void steering_limit_interrupt();
+
+void ackerman_callback(const ackermann_msgs::AckermannDrive& ackermann_variable);
 #endif

@@ -3,6 +3,8 @@
 #include <ArduPID.h>
 #include <Wire.h>
 #include <AccelStepper.h>
+#include <ros.h>
+#include <ackermann_msgs/AckermannDrive.h>
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
@@ -41,6 +43,10 @@ double pid_desired;
 double pid_output;
 
 uint16 throttle_value;
+uint16 angle_value;
+
+ros::NodeHandle node_handle;
+ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
 
 void setup() {
   can_msg_send.can_id = 0x00;
@@ -72,6 +78,10 @@ void setup() {
 
   // set max speed for stepper to move on any condition
   stepper_controller.setMaxSpeed(STEPPER_SPEED);
+
+  // setup rosserial
+  node_handle.initNode();
+  node_handle.subscribe(ackermann_subscriber);
 }
 
 void loop() {
@@ -161,7 +171,9 @@ void loop() {
       throttle_value = 0;
       break;
     case (AUTONOMOUS_MODE):
-      steering_calibration();
+      node_handle.spinOnce();
+      delay(1);
+      // steering_calibration();
       break;
     default:
       throttle_value = pedal;
@@ -289,4 +301,15 @@ void steering_calibration() {
 void steering_limit_interrupt() {
   calibration_phase = CALIBRATE_INTERRUPT;
   limit_switch_warning = HIGH;
+}
+
+void ackerman_callback(const ackermann_msgs::AckermannDrive& ackermann_variable) {
+  // throttle_value = map(ackermann_variable.speed, 0, ACKERMANN_MAX_SPEED, 0, 1024);
+
+  if (stepper_controller.distanceToGo() == 0) {
+    // TODO: move usage to a function that translates the angle to steps
+    stepper_controller.moveTo(((ackermann_variable.steering_angle / 360.0) * STEPPER_REVOLUTION) * STEPPER_GEAR_RATIO);
+    stepper_controller.setSpeed(STEPPER_SPEED);
+    stepper_controller.runSpeedToPosition();
+  }
 }
