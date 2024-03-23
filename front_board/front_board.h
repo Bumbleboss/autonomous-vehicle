@@ -57,13 +57,6 @@ typedef unsigned int uint16;    // 65,535
 typedef unsigned long uint32;   // 4,294,967,295
 
 typedef enum {
-  MANUAL_MODE,
-  CALIBRATION_MODE,
-  AUTONOMOUS_MODE,
-  CONST_SPEED_MODE,
-} DRIVING_MODES;
-
-typedef enum {
   CALIBRATE_INTERRUPT = 1,
   CALIBRATE_RESET_POSITION,
   CALIBRATE_CENTER,
@@ -81,7 +74,9 @@ struct can_frame can_msg_receive;
  * pull-down switch functionality with debouncing
  * - SW_INPUT: switch input value
  * - SW_FLAG: previous state condition
- * - SW_VALUE: stored value that will be used for our computations 
+ * - SW_VALUE: stored value that will be used for our computations
+ * 
+ * It also contains a custom snippet for deactivating other driving modes when a new one is set to be activated
 */
 void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE);
 

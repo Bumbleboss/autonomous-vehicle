@@ -20,17 +20,15 @@ bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
 bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
 
-bool CALIB_SW, CALIB_FLAG, CALIB_VAL;
-bool AUTO_SW, AUTO_FLAG, AUTO_VAL;
-bool CONS_SW, CONS_FLAG, CONS_VAL;
+bool CALIB_SW, CALIB_FLAG, CALIBRATION_MODE;
+bool AUTO_SW, AUTO_FLAG, AUTONOMOUS_MODE;
+bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 
 uint32 current_millis;
 uint32 previous_millis = 0;
 
-DRIVING_MODES driving_mode;
-CALIBRATION_PHASES calibration_phase;
-
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
+CALIBRATION_PHASES calibration_phase;
 
 uint16 throttle_value;
 int angle_value = 0;
@@ -78,29 +76,26 @@ void loop() {
   
   current_millis = millis();
 
-  // map pedal resolution to motor
-  pedal = analogRead(PEDAL_PIN);
-
   // specific switches use pull-down logic
   pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
   pull_down_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
   pull_down_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
   pull_down_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
 
-  pull_down_switch(&CALIB_SW, &CALIB_FLAG, &CALIB_VAL);
-  pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTO_VAL);
-  pull_down_switch(&CONS_SW, &CONS_FLAG, &CONS_VAL);
+  pull_down_switch(&CALIB_SW, &CALIB_FLAG, &CALIBRATION_MODE);
+  pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTONOMOUS_MODE);
+  pull_down_switch(&CONS_SW, &CONS_FLAG, &CONST_SPEED_MODE);
 
   digitalWrite(HORN_PIN, HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
   // enable switch led for it's relative mode
-  digitalWrite(CALIB_LED, driving_mode == CALIBRATION_MODE);
-  digitalWrite(AUTO_LED, driving_mode == AUTONOMOUS_MODE);
-  digitalWrite(CONS_LED, driving_mode == CONST_SPEED_MODE);
+  digitalWrite(CALIB_LED, CALIBRATION_MODE);
+  digitalWrite(AUTO_LED, AUTONOMOUS_MODE);
+  digitalWrite(CONS_LED, CONST_SPEED_MODE);
 
-  // disable stepper's holding torque when its not autonomous mode
-  if (driving_mode == AUTONOMOUS_MODE || driving_mode == CALIBRATION_MODE) {
+  // disable stepper's holding torque when its not in calibration nor autonomous mode
+  if (CALIBRATION_MODE || AUTONOMOUS_MODE) {
     digitalWrite(STEPPER_ENA_PIN, 0);
   } else {
     digitalWrite(STEPPER_ENA_PIN, 1);
@@ -108,54 +103,27 @@ void loop() {
 
   warning_led_controller();
 
-  // check which switch is pressed change driving mode accordingly
-  // it will shut other modes as only on mode should be activated at once
-  if (CALIB_VAL) {
-    driving_mode = CALIBRATION_MODE;
-    
-    AUTO_VAL = LOW;
-    CONS_VAL = LOW;
-  }
+  // driving modes: calibration, autonomous, const speed
+  // calibration mode active
+  if (CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    steering_calibration();
   
-  if (AUTO_VAL) {
-    driving_mode = AUTONOMOUS_MODE;
+  // autonomous mode active
+  } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    node_handle.spinOnce();
+    delay(1);
 
-    CALIB_VAL = LOW;
-    CONS_VAL = LOW;
-  }
+    stepper_controller.moveTo(angle_value);
+    stepper_controller.setSpeed(STEPPER_SPEED);     
+    stepper_controller.runSpeedToPosition();
 
-  if (CONS_VAL) {
-    driving_mode = CONST_SPEED_MODE;
+  // constant speed mode active
+  } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && CONST_SPEED_MODE) {
+    throttle_value = 260;
 
-    CALIB_VAL = LOW;
-    AUTO_VAL = LOW;
-  }
-
-  if (!CALIB_VAL && !CONS_VAL && !AUTO_VAL) {
-    driving_mode = MANUAL_MODE;
-  }
-
-  switch (driving_mode) {
-    case (MANUAL_MODE):
-      throttle_value = pedal;
-      break;
-    case (CALIBRATION_MODE):
-      steering_calibration();
-      break;
-    case (AUTONOMOUS_MODE):
-      node_handle.spinOnce();
-      delay(1);
-
-      stepper_controller.moveTo(angle_value);
-      stepper_controller.setSpeed(STEPPER_SPEED);     
-      stepper_controller.runSpeedToPosition();
-      break;
-    case (CONST_SPEED_MODE):
-      throttle_value = 260;
-      break;
-    default:
-      throttle_value = pedal;
-      break;
+  // manual mode active
+  } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    throttle_value = analogRead(PEDAL_PIN);
   }
   
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
@@ -188,6 +156,19 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
     if (*SW_INPUT == HIGH) {
       *SW_VALUE = (!*SW_VALUE);
       *SW_FLAG = LOW;
+
+      // check if the switch is related to driving modes
+      // if it is, and its being activated, deactivate other modes
+      if (SW_VALUE == &CALIBRATION_MODE && *SW_VALUE == HIGH) {
+        AUTONOMOUS_MODE = LOW;
+        CONST_SPEED_MODE = LOW;
+      } else if (SW_VALUE == &AUTONOMOUS_MODE && *SW_VALUE == HIGH) {
+        CALIBRATION_MODE = LOW;
+        CONST_SPEED_MODE = LOW;
+      } else if (SW_VALUE == &CONST_SPEED_MODE && *SW_VALUE == HIGH) {
+        AUTONOMOUS_MODE = LOW;
+        CONST_SPEED_MODE = LOW;
+      }
     }
   }
 
