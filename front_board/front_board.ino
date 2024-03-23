@@ -28,6 +28,8 @@ uint32 current_millis;
 uint32 previous_millis = 0;
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
+
+bool CALIBRATE_INTERRUPT_FLAG = LOW;
 CALIBRATION_PHASES calibration_phase;
 
 uint16 throttle_value;
@@ -58,7 +60,7 @@ void setup() {
 
   // limit swtich pin definition and interrupt setup
   pinMode(STEERING_LIMIT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, FALLING);
+  attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, RISING);
 
   // set max speed for stepper to move on any condition
   stepper_controller.setMaxSpeed(STEPPER_SPEED);
@@ -229,6 +231,8 @@ void steering_calibration() {
 
   switch(calibration_phase) {
     case (CALIBRATE_INTERRUPT):
+      CALIBRATE_INTERRUPT_FLAG = HIGH;
+
       stepper_controller.stop();
       delay(2000);
 
@@ -257,7 +261,10 @@ void steering_calibration() {
 }
 
 void steering_limit_interrupt() {
-  calibration_phase = CALIBRATE_INTERRUPT;
+  // this is done to avoid triggering the interrupt phase multiple times
+  if (!CALIBRATE_INTERRUPT_FLAG) {
+    calibration_phase = CALIBRATE_INTERRUPT;
+  }
 }
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
