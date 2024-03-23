@@ -24,8 +24,8 @@
 #define HEADLIGHTS_I2C 6
 
 // bottom-last-right
-#define PID_LED 18
-#define PID_I2C 2
+#define CALIB_LED 18
+#define CALIB_I2C 2
 
 // bottom-mid
 #define AUTO_LED 19
@@ -40,15 +40,14 @@
 #define STEPPER_PIN 14
 #define STEPPER_DIR_PIN 13
 #define STEPPER_ENA_PIN 12
-#define STEERING_LIMIT_PIN 11
 
-#define STEPPER_SPEED 1000
+#define STEPPER_SPEED 2500
 #define STEPPER_REVOLUTION 1000 
-#define STEPPER_GEAR_RATIO 2
-#define STEPPER_STEERING_CENTER 4300
 
-// ackermann config
-#define ACKERMANN_MAX_SPEED 20
+#define STEERING_LIMIT_PIN 11
+#define STEERING_CENTER -5300
+#define STEERING_MAX_STEPS 7000
+#define STEERING_MAX_ANGLE 0.453785606
 
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
@@ -59,10 +58,9 @@ typedef unsigned long uint32;   // 4,294,967,295
 
 typedef enum {
   MANUAL_MODE,
-  PID_MODE,
+  CALIBRATION_MODE,
   AUTONOMOUS_MODE,
   CONST_SPEED_MODE,
-  CALIBRATION_MODE
 } DRIVING_MODES;
 
 typedef enum {
