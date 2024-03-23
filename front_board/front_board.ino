@@ -30,6 +30,7 @@ uint32 previous_millis = 0;
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
 bool CALIBRATE_INTERRUPT_FLAG = LOW;
+bool LIMIT_SWITCH_FLAG = LOW;
 CALIBRATION_PHASES calibration_phase;
 
 uint16 throttle_value;
@@ -115,9 +116,16 @@ void loop() {
     node_handle.spinOnce();
     delay(1);
 
-    stepper_controller.moveTo(angle_value);
-    stepper_controller.setSpeed(STEPPER_SPEED);     
-    stepper_controller.runSpeedToPosition();
+    // stop steering if limits are somehow reached
+    if (LIMIT_SWITCH_FLAG == HIGH) {
+      stepper_controller.stop();
+      angle_value = stepper_controller.currentPosition();
+      LIMIT_SWITCH_FLAG = LOW;
+    } else {
+      stepper_controller.moveTo(angle_value);
+      stepper_controller.setSpeed(STEPPER_SPEED);     
+      stepper_controller.runSpeedToPosition();
+    }
 
   // constant speed mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && CONST_SPEED_MODE) {
@@ -265,6 +273,8 @@ void steering_limit_interrupt() {
   if (!CALIBRATE_INTERRUPT_FLAG) {
     calibration_phase = CALIBRATE_INTERRUPT;
   }
+
+  LIMIT_SWITCH_FLAG = HIGH;
 }
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
