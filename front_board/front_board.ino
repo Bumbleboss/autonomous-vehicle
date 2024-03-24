@@ -61,7 +61,7 @@ void setup() {
 
   // limit swtich pin definition and interrupt setup
   pinMode(STEERING_LIMIT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, FALLING);
 
   // set max speed for stepper to move on any condition
   stepper_controller.setMaxSpeed(STEPPER_SPEED);
@@ -176,8 +176,8 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
         CALIBRATION_MODE = LOW;
         CONST_SPEED_MODE = LOW;
       } else if (SW_VALUE == &CONST_SPEED_MODE && *SW_VALUE == HIGH) {
+        CALIBRATION_MODE = LOW;
         AUTONOMOUS_MODE = LOW;
-        CONST_SPEED_MODE = LOW;
       }
     }
   }
