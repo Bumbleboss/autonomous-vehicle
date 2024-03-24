@@ -125,6 +125,22 @@ void loop() {
       stepper_controller.moveTo(angle_value);
       stepper_controller.setSpeed(STEPPER_SPEED);     
       stepper_controller.runSpeedToPosition();
+
+      // indicate the steering direction through warning led
+      if (angle_value > 0) {
+        RIGHT_WARNING_VAL = 0;
+        LEFT_WARNING_VAL = 1;
+
+      } else if (angle_value < 0) {
+        RIGHT_WARNING_VAL = 1;
+        LEFT_WARNING_VAL = 0;
+      }
+
+      // disable warning led if there's no new steering movement
+      if (stepper_controller.distanceToGo() == 0) {
+        RIGHT_WARNING_VAL = 0;
+        LEFT_WARNING_VAL = 0;
+      }
     }
 
   // constant speed mode active
