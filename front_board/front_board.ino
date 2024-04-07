@@ -113,6 +113,9 @@ void loop() {
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    // change constant speed value here
+    throttle_value = 260;
+
     // stop steering if limits are somehow reached
     if (LIMIT_SWITCH_FLAG == HIGH) {
       stepper_controller.stop();
@@ -295,4 +298,5 @@ void steering_limit_interrupt() {
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
   angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
   angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+  throttle_value = map(ackerman_data.speed*100,0,100,250,280); // speed comes from ROS from 0 to 1 
 }
