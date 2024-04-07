@@ -113,6 +113,9 @@ void loop() {
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    // change constant speed value here
+    throttle_value = 260;
+
     // stop steering if limits are somehow reached
     if (LIMIT_SWITCH_FLAG == HIGH) {
       stepper_controller.stop();
