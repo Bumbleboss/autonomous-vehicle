@@ -1,4 +1,4 @@
-o#include <SPI.h>
+#include <SPI.h>
 #include <mcp2515.h>
 #include <Wire.h>
 #include <AccelStepper.h>
