@@ -45,9 +45,9 @@
 #define STEPPER_REVOLUTION 1000 
 
 #define STEERING_LIMIT_PIN 11
-#define STEERING_CENTER -5300
+#define STEERING_CENTER -7000
 
-#define STEERING_MAX_STEPS 8000
+#define STEERING_MAX_STEPS 7500
 #define STEERING_MAX_ANGLE 0.698132329
 
 /**********************************
