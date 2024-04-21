@@ -54,7 +54,7 @@ void setup() {
 
 void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    throttle = (can_msg_receive.data[0] & 0xFF) | ((can_msg_receive.data[1] & 0xFF) << 8);
+    throttle = ((uint16) can_msg_receive.data[0] & 0xFF) | ((uint16) (can_msg_receive.data[1] & 0xFF) << 8);
   }
 
   // set the bulbs based on statements from front board
@@ -94,7 +94,7 @@ void loop() {
   }
 
   mcp2515.sendMessage(&can_msg_send);
-}    
+}
 
 void set_motor_value(uint16 value) {
   pwmWriteHR(MOTOR_PIN, constrain(map(value, 0, 1024, 0, 65535), 0, 65535));

@@ -73,8 +73,8 @@ void setup() {
 
 void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    displacement = (can_msg_receive.data[0] & 0xFF) | ((can_msg_receive.data[1] & 0xFF) << 8) | ((can_msg_receive.data[2] & 0xFF) << 16) | ((can_msg_receive.data[3] & 0xFF) << 24);
-    speed = (can_msg_receive.data[4] & 0xFF) | ((can_msg_receive.data[5] & 0xFF) << 8) | ((can_msg_receive.data[6] & 0xFF) << 16) | ((can_msg_receive.data[7] & 0xFF) << 24);
+    displacement = ((uint32) can_msg_receive.data[0] & 0xFF) | ((uint32) (can_msg_receive.data[1] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[2] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[3] & 0xFF) << 24);
+    speed = ((uint32) can_msg_receive.data[4] & 0xFF) | ((uint32) (can_msg_receive.data[5] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[6] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[7] & 0xFF) << 24);
   }
   
   current_millis = millis();
