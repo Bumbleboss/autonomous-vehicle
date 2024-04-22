@@ -295,5 +295,5 @@ void steering_limit_interrupt() {
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
   angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
   angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
-  throttle_value = map(ackerman_data.speed * 1000, 0, 1000, 240, 1023);
+  throttle_value = map(ackerman_data.speed * 1000, 0, 1000, 230, 1023);
 }
