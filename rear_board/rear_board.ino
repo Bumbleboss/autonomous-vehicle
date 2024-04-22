@@ -123,6 +123,10 @@ void calculate_speed() {
   // and send it via CAN
   displacement = displacement_f * 100;
   speed = speed_f * 100;
+
+  // print readings
+  Serial.println(speed_f, "Speed (m/s): %.5f");
+  Serial.println(displacement_f, "Distance: %.5f");
   
   // shifting start time to current time in order
   // to get the next tick timeframe
