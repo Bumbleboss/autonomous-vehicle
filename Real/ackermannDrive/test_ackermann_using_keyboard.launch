@@ -1,8 +1,0 @@
-<launch>
-  <node pkg="historia" type="cmd_vel_to_ackermann_drive.py" name="cmd_vel_to_ackermann_drive" output="screen">
-    <param name="wheelbase" value="2.1"/>
-  </node>
-
-<!-- test the cmd_vel_to_ackermann_drive using teleop_twist_keyboard to make sure its works separately-->
-  <!-- <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard" output="screen"/> -->
-</launch>

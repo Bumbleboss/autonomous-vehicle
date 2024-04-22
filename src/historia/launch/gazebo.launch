@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Custom gazebo arguements -->
+  <arg name="world" default="empty"/> 
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+   <!-- World File -->
+  <arg name="world_file" default="$(find historia)/world/fristworld.world" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="world_name" value="$(arg world_file)"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="verbose" value="false"/>
+  </include>
+ 
+       <!--ackermann plugin-->
+     <!-- <include file="$(find historia)/ackermann_plugin/launch/steer_bot_sim.launch">
+        <arg name="model" value="$(find historia)/urdf/historia.xacro" />
+    </include> -->
+
+ 
+  <param command="$(find xacro)/xacro $(find historia)/urdf/historia.xacro"
+    name="robot_description" />
+  <node args="-param robot_description -urdf -model historia" name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"/>
+
+  <!-- Send joint values-->
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/>
+  </node> -->
+
+  <!-- Send robot states to tf -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen"/>
+
+    <node
+    name="tf_footprint_base"
+    pkg="tf"
+    type="static_transform_publisher"
+    args="0 0 0 0 0 0 base_link base_footprint 40" />
+
+    <node
+    name="fake_joint_calibration"
+    pkg="rostopic"
+    type="rostopic"
+    args="pub /calibrated std_msgs/Bool true" />
+</launch>
