@@ -47,7 +47,7 @@
 #define STEERING_LIMIT_PIN 11
 #define STEERING_CENTER -7000
 
-#define STEERING_MAX_STEPS 7500
+#define STEERING_MAX_STEPS 5000
 #define STEERING_MAX_ANGLE 0.698132329
 
 /**********************************
