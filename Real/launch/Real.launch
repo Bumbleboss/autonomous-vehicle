@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!--robot_description -->
+  <param command="$(find xacro)/xacro $(find historia)/urdf/historia2.xacro"
+    name="robot_description" />
+  <!-- <node args="-param robot_description -urdf -model historia2" name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"/> -->
+
+  <!-- Send robot states to tf -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen"/>
+
+
+  <!-- Send joint values-->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/> 
+  </node>
+
+  <!--Navigation-->
+  <include file="$(find historia)/Real/launch/robot_navigation.launch"/>
+
+  <!--GPS-->
+  <!-- <include file="$(find historia)/Real/GPS/GPS.launch"/> -->
+
+  <!--AckermannDrive-->
+  <node pkg="historia" type="cmd_vel_to_ackermann_drive.py" name="ackermannDrive"/>
+
+  <!--Camera-->
+  <include file="$(find zed_wrapper)/launch/zed2.launch"/>
+
+  <!--ai stop-->
+  <node pkg="best_ai" type="controller.py" name="ackermann_controller" />
+
+</launch>

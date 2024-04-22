@@ -1,0 +1,68 @@
+<launch>
+
+<!-- Navsat Transform -->
+  <!-- <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true" clear_params="true"> -->
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" output ="screen" clear_params="true">
+
+    <param name="magnetic_declination_radians" value="0.165806279"/>
+
+    <param name="yaw_offset" value="1.570796327"/>
+    <param name="zero_altitude" value="true"/>
+    <param name="use_odometry_yaw" value="false"/>
+
+    <param name="transform_time_offset" value="0.1"/>
+
+    <param name="wait_for_datum" value="true"/>
+    <param name="publish_filtered_gps" value="false"/>
+    <param name="broadcast_cartesian_transform" value="false"/>
+    <remap from="/gps/fix" to="/fix"/>
+    <remap from="/odometry/filtered" to="/odometry/filtered_global"/>
+    <remap from="/imu/data" to="/zed2/zed_node/imu/data"/>
+ </node>
+
+  <rosparam param="datum">[30.143986666666667, 31.7176051666666655, 1.3788 , map, base_link]</rosparam>
+  <!-- <rosparam param="datum">[30.143905666666665, 31.717452833333333, 1.3788, map, base_link]</rosparam> -->
+
+  <!-- <node pkg="tf" type="static_transform_publisher"
+ name="map_odom"
+ args="0 0 0 0 0 0 map odom 100" />  -->
+
+
+ <!-- <node pkg="tf" type="static_transform_publisher"
+ name="camera_transform"
+ args="-0.0155625082465085 0.00050655910960673 -0.00990954357108276 0 0 0 base_link zed2_base_link 100" />  -->
+
+
+
+<!-- EKF Node -->
+<!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_with_gps">
+  <rosparam command="load" file="$(find historia)/Real/config/gps_imu_localization.yaml" />
+</node> -->
+
+
+
+<!-- tf odom to base_link-->
+<!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true" output="screen"> 
+  <rosparam command="load" file="$(find historia)/Real/config/tf_odom_to_base_link_ekf.yaml" />
+  </node>   -->
+
+ <!-- tf map to odom-->
+   <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true" output="screen"> 
+    <remap from="odometry/filtered" to="odometry/filtered_global"/> 
+  <rosparam command="load" file="$(find historia)/Real/config/tf_map_to_odom_ekf.yaml" />
+  </node>  -->
+
+
+<!-- ****************** global ekf *************-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_global" clear_params="true" output="screen"> 
+    <remap from="odometry/filtered" to="odometry/filtered_global"/> 
+  <rosparam command="load" file="$(find historia)/Real/config/ekf_global.yaml" />
+  </node>
+
+
+<!-- ****************** local ekf *************-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_local" clear_params="true" output="screen"> 
+  <rosparam command="load" file="$(find historia)/Real/config/ekf_local.yaml" />
+  </node>
+
+</launch>
