@@ -1,7 +1,13 @@
 <!--GPS (change the name of the port if its needed)-->
 <launch>
-  <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_serial_driver" output="screen">
+  <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_serial_driver" respawn="true" output="screen">
     <param name="port" type="string" value="/dev/ttyACM0"/>
+    <param name="baud" value="4800"/>
   </node>
+
+    <!--TF node-->
+    <node pkg="historia" type="TF_GPS.py" name="TF_GPS" output="screen"/>
 </launch>
+
+
 
