@@ -1,0 +1,6 @@
+bool get_wpts
+---
+float64[] latitude
+float64[] longitude
+int8 num_wpts
+bool success

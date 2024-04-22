@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+        <arg name="port" value="8080"/>
+    </include>
+ <!--OSM-->
+      <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_serial_driver" output="screen">
+    <param name="port" type="string" value="/dev/ttyACM0"/>
+  </node>
+</launch>
