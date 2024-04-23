@@ -7,12 +7,22 @@ from zed_interfaces.msg import ObjectsStamped
 
 stop_car = False
 object_limit = 5
+previous_speed
 
 def ackermann_callback(msg: AckermannDrive, cmd_pub):
     global stop_car
+    global previous_speed
+
+    previous_time = time.time()
 
     if stop_car:
         msg.speed = 0
+    
+    if not stop_car and msg.speed != 0.0:
+        previous_speed = msg.speed
+
+    if not stop_car and msg.speed == 0.0 and previous_speed is not None:
+        msg.speed = previous_speed
 
     cmd_pub.publish(msg)
 
@@ -31,7 +41,6 @@ def objects_callback(msg: ObjectsStamped):
             stop_car = False
     else:
         stop_car = False
-
 
 def ackermann_controller():
     rospy.init_node('ackermann_controller')
