@@ -1,5 +1,5 @@
 <launch>
-  <arg name="map_file" default="$(find historia)/Real/maps/test4.yaml"/>
+  <arg name="map_file" default="$(find historia)/Real/maps/SORA.yaml"/>
 
   <arg name="move_forward_only" default="true"/>
 
