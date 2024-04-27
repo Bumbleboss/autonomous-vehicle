@@ -28,6 +28,6 @@
   <include file="$(find zed_wrapper)/launch/zed2.launch"/>
 
   <!--Ai stop-->
-  <node pkg="perception" type="controller.py" name="ackermann_controller" />
+  <node pkg="best_ai" type="controller.py" name="ackermann_controller" />
 
 </launch>

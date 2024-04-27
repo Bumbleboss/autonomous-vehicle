@@ -1,21 +1,21 @@
 DWAPlannerROS:
 
 # Robot Configuration Parameters
-  max_vel_x: 5.0
-  min_vel_x: 1.0
+  max_vel_x: 1.0
+  min_vel_x: 0.2
 
   # max_vel_y: 0.0
   # min_vel_y: 0.0
   meter_scoring : true
 
 # The velocity when robot is moving in a straight line
-  max_vel_trans:  5.0
-  min_vel_trans:  1.0
+  max_vel_trans:  1.0
+  min_vel_trans:  0.2
 
   max_vel_theta: 0.26
   min_vel_theta: -0.26 
 
-  acc_lim_x: 1.6
+  acc_lim_x: 0.5
   acc_lim_y: 0.0
   acc_lim_theta: 0.15
 
@@ -33,7 +33,7 @@ DWAPlannerROS:
 
 # Trajectory Scoring Parameters
   path_distance_bias: 20.0    # the more the value is the more the local path follow the global path [0:]
-  goal_distance_bias: 24.0    # the 
+  goal_distance_bias: 30.0    # the 
   occdist_scale: 0.04
   forward_point_distance: 0.325
   stop_time_buffer: 0.2
