@@ -8,11 +8,11 @@
 
 MCP2515 mcp2515(CAN_PIN);
 
-uint16 pedal;
-uint32 displacement;
-uint32 speed;
+uint16_t pedal;
+uint16_t speed;
+uint32_t distance;
 
-byte I2C_B1, I2C_B2;
+uint8_t I2C_B1, I2C_B2;
 
 bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
@@ -24,8 +24,8 @@ bool CALIB_SW, CALIB_FLAG, CALIBRATION_MODE;
 bool AUTO_SW, AUTO_FLAG, AUTONOMOUS_MODE;
 bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 
-uint32 current_millis;
-uint32 previous_millis = 0;
+uint32_t current_millis;
+uint32_t previous_millis = 0;
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
@@ -33,8 +33,8 @@ bool CALIBRATE_INTERRUPT_FLAG = LOW;
 bool LIMIT_SWITCH_FLAG = LOW;
 CALIBRATION_PHASES calibration_phase;
 
-uint16 throttle_value;
-int angle_value = 0;
+uint16_t throttle_value;
+int16_t angle_value = 0;
 
 ros::NodeHandle node_handle;
 ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
@@ -73,8 +73,8 @@ void setup() {
 
 void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    displacement = ((uint32) can_msg_receive.data[0] & 0xFF) | ((uint32) (can_msg_receive.data[1] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[2] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[3] & 0xFF) << 24);
-    speed = ((uint32) can_msg_receive.data[4] & 0xFF) | ((uint32) (can_msg_receive.data[5] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[6] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[7] & 0xFF) << 24);
+    distance = ((uint32_t) can_msg_receive.data[0] & 0xFF) | ((uint32_t) (can_msg_receive.data[1] & 0xFF) << 8) | ((uint32_t) (can_msg_receive.data[2] & 0xFF) << 16) | ((uint32_t) (can_msg_receive.data[3] & 0xFF) << 24);
+    speed = ((uint16_t) can_msg_receive.data[4] & 0xFF) | ((uint16_t) (can_msg_receive.data[5] & 0xFF) << 8);
   }
   
   current_millis = millis();

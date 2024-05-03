@@ -54,11 +54,8 @@
 #define MAX_CAR_SPEED_MS 5
 
 /**********************************
- * DEFINE DATA TYPES AND STRUCT
+ * DEFINE TYPES AND STRUCTS
 ***********************************/
-
-typedef unsigned int uint16;    // 65,535
-typedef unsigned long uint32;   // 4,294,967,295
 
 typedef enum {
   CALIBRATE_INTERRUPT = 1,

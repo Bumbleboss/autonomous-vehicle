@@ -18,11 +18,8 @@
 #define TICKS_PER_METER 47.0
 
 /**********************************
- * DEFINE DATA TYPES AND STRUCT
+ * DEFINE CAN STRUCT
 ***********************************/
-
-typedef unsigned int uint16;    // 65,535
-typedef unsigned long uint32;   // 4,294,967,295
 
 struct can_frame can_msg_send;
 struct can_frame can_msg_receive;
@@ -39,11 +36,11 @@ void calculate_speed();
 /**
  * refactored function for sending pwm signal to motor
 */
-void set_motor_value(uint16 value);
+void set_motor_value(uint16_t value);
 
 /**
  * increment or decrement to the desired value based on old throttle value
 */
-void set_throttle(uint16 value);
+void set_throttle(uint16_t value);
 
 #endif

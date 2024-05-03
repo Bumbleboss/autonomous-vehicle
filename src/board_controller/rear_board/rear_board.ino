@@ -5,20 +5,20 @@
 
 MCP2515 mcp2515(CAN_PIN);
 
-uint16 throttle;
-uint16 throttle_old;
+uint16_t throttle;
+uint16_t throttle_old;
 
-volatile uint32 pulse_count = 0;
-volatile uint32 displacement = 0;
-volatile uint32 speed = 0;
+volatile uint32_t pulse_count = 0;
+volatile uint32_t displacement = 0;
+volatile uint16_t speed = 0;
 
-volatile uint32 start_time = 0;
-volatile uint32 current_time = 0;
-volatile uint32 elapsed_time = 0;
+volatile uint32_t start_time = 0;
+volatile uint32_t current_time = 0;
+volatile uint32_t elapsed_time = 0;
 
 void setup() {
   can_msg_send.can_id = 0x02;
-  can_msg_send.can_dlc = 8;
+  can_msg_send.can_dlc = 6;
 
   // displacement value
   can_msg_send.data[0] = 0x00;
@@ -29,10 +29,6 @@ void setup() {
   // speed value
   can_msg_send.data[4] = 0x00;
   can_msg_send.data[5] = 0x00;
-  can_msg_send.data[6] = 0x00;
-  can_msg_send.data[7] = 0x00;
-
-  Serial.begin(115200);
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS);
@@ -54,7 +50,7 @@ void setup() {
 
 void loop() {
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    throttle = ((uint16) can_msg_receive.data[0] & 0xFF) | ((uint16) (can_msg_receive.data[1] & 0xFF) << 8);
+    throttle = ((uint16_t) can_msg_receive.data[0] & 0xFF) | ((uint16_t) (can_msg_receive.data[1] & 0xFF) << 8);
   }
 
   // set the bulbs based on statements from front board
@@ -89,20 +85,18 @@ void loop() {
   } else {
     can_msg_send.data[4] = (speed >> 0) & 0xFF;
     can_msg_send.data[5] = (speed >> 8) & 0xFF;
-    can_msg_send.data[6] = (speed >> 16) & 0xFF;
-    can_msg_send.data[7] = (speed >> 24) & 0xFF;
   }
 
   mcp2515.sendMessage(&can_msg_send);
 }
 
-void set_motor_value(uint16 value) {
+void set_motor_value(uint16_t value) {
   pwmWriteHR(MOTOR_PIN, constrain(map(value, 0, 1024, 0, 65535), 0, 65535));
   SetPinFrequencySafe(MOTOR_PIN, 1000);
 }
 
-void set_throttle(uint16 value) {
-  uint16 i = throttle_old;
+void set_throttle(uint16_t value) {
+  uint16_t i = throttle_old;
 
   // fancy statements to avoid having two separate loops
   for (; i > value | i < value; throttle_old > value ? i-- : i++) {
@@ -123,10 +117,6 @@ void calculate_speed() {
   // and send it via CAN
   displacement = displacement_f * 100;
   speed = speed_f * 100;
-
-  // print readings
-  Serial.println(speed_f, "Speed (m/s): %.5f");
-  Serial.println(displacement_f, "Distance: %.5f");
   
   // shifting start time to current time in order
   // to get the next tick timeframe
