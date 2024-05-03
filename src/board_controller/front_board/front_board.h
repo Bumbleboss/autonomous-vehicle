@@ -40,14 +40,17 @@
 #define STEPPER_PIN 14
 #define STEPPER_DIR_PIN 13
 #define STEPPER_ENA_PIN 12
+#define STEERING_LIMIT_PIN 11
+
+/**********************************
+ * DEFINE FIXED VALUES
+***********************************/
 
 #define STEPPER_SPEED 3500
 #define STEPPER_REVOLUTION 1000 
 
-#define STEERING_LIMIT_PIN 11
 #define STEERING_CENTER -7000
-
-#define STEERING_MAX_STEPS 5000
+#define STEERING_MAX_STEPS 6900
 #define STEERING_MAX_ANGLE 0.698132329
 
 // max car speed in m/s
