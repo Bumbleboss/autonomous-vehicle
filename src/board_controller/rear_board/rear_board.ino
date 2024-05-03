@@ -91,7 +91,7 @@ void loop() {
 }
 
 void set_motor_value(uint16_t value) {
-  pwmWriteHR(MOTOR_PIN, constrain(map(value, 0, 1024, 0, 65535), 0, 65535));
+  pwmWriteHR(MOTOR_PIN, constrain(map(value, 0, 1024, 0, 65532), 0, 65532));
   SetPinFrequencySafe(MOTOR_PIN, 1000);
 }
 
