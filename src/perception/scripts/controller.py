@@ -34,7 +34,7 @@ def objects_callback(msg: ObjectsStamped):
         stop_car = False
 
 def ackermann_controller():
-    rospy.init_node('ackermann_controller')
+    rospy.init_node('perception')
 
     cmd_pub = rospy.Publisher('/ackermann_cmd', AckermannDrive, queue_size=10)
 
