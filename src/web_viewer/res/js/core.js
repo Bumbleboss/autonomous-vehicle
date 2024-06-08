@@ -43,7 +43,7 @@ const drivingModes = {
 
 // update driving mode
 driving_listener.subscribe((msg) => {
-  drive_elm.children[0].innerText = drivingModes[msg.data];
+  drive_elm.children[0].children[0].innerText = drivingModes[msg.data];
   
   if (msg.data == 1) {
     calibrate_elm.classList.remove('pending');

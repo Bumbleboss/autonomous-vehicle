@@ -7,8 +7,9 @@
   --red: #95322A;
   --green: #275C33;
   --yellow: #955D2A;
-  
-  --gap: 35px;
+  --black-bg: #252127dc;
+
+  --gap: 20px;
   --border: 8px;
 }
 
@@ -45,6 +46,49 @@ span {
 .grid-left {
   background-color: var(--purple);
   grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+}
+
+#speed {
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  font-size: 36px;
+  font-weight: 400;
+  height: 100%;
+}
+
+#speed span {
+  font-size: 80px;
+  font-weight: 700;
+}
+
+#mode {
+  padding: var(--gap);
+  background-color: var(--black-bg);
+  display: flex;
+  flex-direction: row;
+  align-self: end;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+}
+
+#mode > div {
+  width: 100%;
+}
+
+#mode > div span {
+  font-size: 46px;
+  line-height: 1.3;
+  font-weight: 700;
+  display: block;
+}
+
+#mode img {
+  height: 80px;
 }
 
 .grid-right {
@@ -75,12 +119,12 @@ span {
 
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: var(--gap);
   cursor: pointer;
   
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: var(--gap);
 }
 .toggle img {
   width: 70px;
@@ -106,7 +150,7 @@ span {
 .grid-bottom-right {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  gap: var(--gap);
 }
 
 
