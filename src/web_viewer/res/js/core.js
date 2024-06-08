@@ -1,13 +1,14 @@
-// Connect to ROS
-var ros = new ROSLIB.Ros({
+// ROS instance
+const ros = new ROSLIB.Ros({
   url: 'ws://localhost:9090'  // Adjust the WebSocket URL as needed
 });
 
-ros.on('connection', function() {
+// event listeners
+ros.on('connection', () => {
   console.log('Connected to websocket server.');
 });
 
-ros.on('error', function(error) {
+ros.on('error', (error) => {
   console.log('Error connecting to websocket server: ', error);
 });
 
