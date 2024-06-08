@@ -2,10 +2,12 @@
   --black: #161616;
   --gray: #4E4A52;
   --white: #FFFFFF;
+
   --purple: #533B66;
   --red: #95322A;
   --green: #275C33;
-
+  --yellow: #955D2A;
+  
   --gap: 35px;
   --border: 8px;
 }
@@ -15,7 +17,6 @@ html, body {
   color: #FFFFFF;
   font-size: 24px;
   margin: 0;
-
   font-family: 'Inter', sans-serif;
 }
 
@@ -89,7 +90,10 @@ span {
   background-color: var(--red);
 }
 .toggle.active {
-  background-color: var(--green)
+  background-color: var(--green);
+}
+.toggle.pending {
+  background-color: var(--yellow);
 }
 
 .toggle.horizontal {
