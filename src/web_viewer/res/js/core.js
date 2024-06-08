@@ -31,9 +31,9 @@ var drivingModes = {
   3: 'Steady State Mode'
 };
 
-// Subscribe to the topic
-drivingModeListener.subscribe(function(message) {
-  var mode = drivingModes[message.data] || 'Unknown Mode';
-  document.getElementById('driving-mode').innerText = mode;
-  console.log('Received message on /driving_mode: ' + message.data);
-});
+// // Subscribe to the topic
+// drivingModeListener.subscribe(function(message) {
+//   var mode = drivingModes[message.data] || 'Unknown Mode';
+//   document.getElementById('driving-mode').innerText = mode;
+//   console.log('Received message on /driving_mode: ' + message.data);
+// });
