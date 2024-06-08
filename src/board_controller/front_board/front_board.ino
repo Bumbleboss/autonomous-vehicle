@@ -4,6 +4,7 @@
 #include <AccelStepper.h>
 #include <ros.h>
 #include <ackermann_msgs/AckermannDrive.h>
+#include <std_msgs/UInt8.h>
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
@@ -39,6 +40,9 @@ int16_t angle_value = 0;
 ros::NodeHandle node_handle;
 ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
 
+std_msgs::UInt8 driving_mode;
+ros::Publisher driving_mode_publisher("/driving_mode", &driving_mode);
+
 void setup() {
   can_msg_send.can_id = 0x00;
   can_msg_send.can_dlc = 3;
@@ -69,6 +73,7 @@ void setup() {
   // setup rosserial
   node_handle.initNode();
   node_handle.subscribe(ackermann_subscriber);
+  node_handle.advertise(driving_mode_publisher);
 }
 
 void loop() {
@@ -110,10 +115,11 @@ void loop() {
   // calibration mode active
   if (CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
     steering_calibration();
+    driving_mode.data = 1;
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
-    // stop sconstantteering if limits are somehow reached
+    // stop steering if limits are somehow reached
     if (LIMIT_SWITCH_FLAG == HIGH) {
       stepper_controller.stop();
       angle_value = stepper_controller.currentPosition();
@@ -140,17 +146,23 @@ void loop() {
       }
     }
 
-    node_handle.spinOnce();
+    driving_mode.data = 2;
 
   // constant speed mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && CONST_SPEED_MODE) {
     throttle_value = 260;
+    driving_mode.data = 3;
 
   // manual mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
     throttle_value = analogRead(PEDAL_PIN);
+    driving_mode.data = 0;
   }
   
+  // publish current driving mode of the vehicle
+  driving_mode_publisher.publish(&driving_mode);
+  node_handle.spinOnce();
+
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
 
@@ -293,9 +305,12 @@ void steering_limit_interrupt() {
 }
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
-  angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
-  angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+  // prevent any control on vehicle unless autonomous button is pressed
+  if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+    angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
 
-  // car movement min value 230, max value 1024
-  throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+    // car movement min value 230, max value 1024
+    throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+  }
 }
