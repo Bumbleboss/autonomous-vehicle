@@ -277,7 +277,7 @@ void steering_calibration() {
 
       break;
     default:
-      stepper_controller.setSpeed(STEPPER_SPEED);
+      stepper_controller.setSpeed(-STEPPER_SPEED);
       stepper_controller.runSpeed();
       break;
   }
