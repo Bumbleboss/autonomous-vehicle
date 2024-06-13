@@ -1,6 +1,6 @@
 // ROS instance
 const ros = new ROSLIB.Ros({
-  url: 'ws://localhost:9090'  // Adjust the WebSocket URL as needed
+  url: 'ws://10.6.3.26:9090'  // Adjust the WebSocket URL as needed
 });
 
 const speed_elm = document.getElementById('speed');
@@ -16,7 +16,7 @@ ros.on('connection', () => {
 });
 
 ros.on('error', (error) => {
-  connect_elm.classList.remove('inactive');
+  connect_elm.classList.add('inactive');
   connect_elm.classList.remove('active');
 });
 
@@ -34,7 +34,7 @@ const driving_listener = new ROSLIB.Topic({
 
 const odom_listener = new ROSLIB.Topic({
   ros: ros,
-  name: '/zed/zed_node/odom',
+  name: '/zed2/zed_node/odom',
   messageType: 'nav_msgs/Odometry'
 });
 
