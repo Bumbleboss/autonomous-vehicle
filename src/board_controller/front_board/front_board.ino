@@ -37,13 +37,12 @@ CALIBRATION_PHASES calibration_phase;
 uint16_t throttle_value;
 int16_t angle_value = 0;
 
-ros::NodeHandle node_handle;
-ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
-ros::Subscriber<std_msgs::UInt8> horn_subscriber("/horn", &horn_callback);
-
 std_msgs::UInt8 driving_mode;
 std_msgs::UInt8 horn;
 
+ros::NodeHandle node_handle;
+ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
+ros::Subscriber<std_msgs::UInt8> horn_subscriber("/horn", &horn_callback);
 ros::Publisher driving_mode_publisher("/driving_mode", &driving_mode);
 
 void setup() {
@@ -76,6 +75,7 @@ void setup() {
   // setup rosserial
   node_handle.initNode();
   node_handle.subscribe(ackermann_subscriber);
+  node_handle.subscribe(horn_subscriber);
   node_handle.advertise(driving_mode_publisher);
 }
 
@@ -165,6 +165,9 @@ void loop() {
   // publish current driving mode of the vehicle
   driving_mode_publisher.publish(&driving_mode);
   node_handle.spinOnce();
+
+  // do not remove otherwise an error will appear in rosserial
+  delay(3);
 
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
