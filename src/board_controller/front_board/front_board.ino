@@ -15,6 +15,8 @@ uint32_t distance;
 
 uint8_t I2C_B1, I2C_B2;
 
+
+bool HORN_ROS = 0;
 bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
@@ -97,7 +99,7 @@ void loop() {
   pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTONOMOUS_MODE);
   pull_down_switch(&CONS_SW, &CONS_FLAG, &CONST_SPEED_MODE);
 
-  digitalWrite(HORN_PIN, HORN_SW);
+  digitalWrite(HORN_PIN, HORN_ROS || HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
   // enable switch led for it's relative mode
@@ -311,9 +313,7 @@ void steering_limit_interrupt() {
 }
 
 void horn_callback(const std_msgs::UInt8& horn_bool) {
-  if (horn_bool.data == 1) {
-    digitalWrite(HORN_PIN, 1);
-  }
+  HORN_ROS = horn_bool.data;
 }
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
