@@ -39,8 +39,11 @@ int16_t angle_value = 0;
 
 ros::NodeHandle node_handle;
 ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
+ros::Subscriber<std_msgs::UInt8> horn_subscriber("/horn", &horn_callback);
 
 std_msgs::UInt8 driving_mode;
+std_msgs::UInt8 horn;
+
 ros::Publisher driving_mode_publisher("/driving_mode", &driving_mode);
 
 void setup() {
@@ -302,6 +305,12 @@ void steering_limit_interrupt() {
   }
 
   LIMIT_SWITCH_FLAG = HIGH;
+}
+
+void horn_callback(const std_msgs::UInt8& horn_bool) {
+  if (horn_bool.data == 1) {
+    digitalWrite(HORN_PIN, 1);
+  }
 }
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
