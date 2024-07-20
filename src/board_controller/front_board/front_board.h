@@ -105,4 +105,6 @@ void steering_calibration();
 void steering_limit_interrupt();
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackermann_variable);
+void horn_callback(const std_msgs::UInt8& horn_bool);
+
 #endif
