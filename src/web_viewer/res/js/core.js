@@ -50,7 +50,8 @@ const drivingModes = {
   0: 'Manual Mode',
   1: 'Calibration Mode',
   2: 'Autonomous Mode',
-  3: 'Steady State Mode'
+  3: 'Steady State Mode',
+  4: 'Calibration Mode'
 };
 
 // update driving mode
@@ -58,6 +59,11 @@ driving_listener.subscribe((msg) => {
   drive_elm.children[0].children[0].innerText = drivingModes[msg.data];
   
   if (msg.data == 1) {
+    calibrate_elm.classList.remove('inactive');
+    calibrate_elm.classList.add('pending');
+  }
+
+  if (msg.data == 4) {
     calibrate_elm.classList.remove('pending');
     calibrate_elm.classList.add('active');
   }
