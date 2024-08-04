@@ -164,3 +164,18 @@ span {
 .grid-bottom-right div:last-child span {
   font-size: 50px;
 }
+
+dialog {
+  padding: 0;
+  outline: 0;
+  border-radius: 12px;
+  border: none;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 80%);
+}
+
+#camera_dialog img {
+  min-height: 80vh;
+}

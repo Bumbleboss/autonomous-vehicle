@@ -3,9 +3,18 @@ const ros = new ROSLIB.Ros({
   url: 'ws://10.6.3.26:9090'  // Adjust the WebSocket URL as needed
 });
 
+// left side elements
 const speed_elm = document.getElementById('speed');
 const drive_elm = document.getElementById('mode');
 const connect_elm = document.getElementById('connect');
+
+// clickable elements
+const camera_elm = document.getElementById('camera');
+
+// dialogs
+const camera_dialog_elm = document.getElementById('camera_dialog');
+
+// indicator elements
 const calibrate_elm = document.getElementById('calibrate');
 const objs_elm = document.getElementById('objects');
 
@@ -24,6 +33,17 @@ ros.on('close', () => {
   connect_elm.classList.add('inactive');
   connect_elm.classList.remove('active');
 });
+
+
+// dialog opener camera
+camera_elm.addEventListener('click', () => {
+  camera_dialog_elm.showModal();
+})
+
+camera_dialog_elm.addEventListener('click', (e) => {
+  if (e.target.nodeName === 'DIALOG')
+  camera_dialog_elm.close()
+})
 
 // driving mode and calibration subscriber
 const driving_listener = new ROSLIB.Topic({
