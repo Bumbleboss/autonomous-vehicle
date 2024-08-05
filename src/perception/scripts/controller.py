@@ -11,10 +11,6 @@ import time
 stop_car = False
 object_limit = 5
 
-<<<<<<< HEAD
-    if stop_car:
-        msg.speed = 0.0
-=======
 stop_car_time = 7
 stop_car_start_time = None
 
@@ -23,7 +19,6 @@ def ackermann_callback(msg: AckermannDrive, cmd_pub):
   if stop_car:
     msg.speed = 0.0
     msg.steering_angle = 0.0
->>>>>>> 216c6a20f3d57dd39f426902c4595be3170152d5
 
   cmd_pub.publish(msg)
 
@@ -68,13 +63,8 @@ def ackermann_controller():
   cmd_pub = rospy.Publisher('/ackermann_cmd', AckermannDrive, queue_size=10)
   horn_pub = rospy.Publisher('/horn', UInt8, queue_size=10)
 
-<<<<<<< HEAD
-    rospy.Subscriber('/ackermann_controller', AckermannDrive, ackermann_callback, cmd_pub)
-    rospy.Subscriber('/zed2/zed_node/obj_det/objects', ObjectsStamped, objects_callback)
-=======
   rospy.Subscriber('/ackermann_controller', AckermannDrive, ackermann_callback, cmd_pub)
   rospy.Subscriber('/zed2/zed_node/obj_det/objects', ObjectsStamped, objects_callback, horn_pub)
->>>>>>> 216c6a20f3d57dd39f426902c4595be3170152d5
 
   rospy.spin()
 
