@@ -40,31 +40,32 @@
 #define STEPPER_PIN 14
 #define STEPPER_DIR_PIN 13
 #define STEPPER_ENA_PIN 12
+#define STEERING_LIMIT_PIN 11
 
-#define STEPPER_SPEED 3500
+
+//Ultrasonics
+#define sensorPin_1 A4 // right ultra
+#define sensorPin_2 A5  // front ultra
+#define sensorPin_3 A7  // left ultra
+#define URTRIG_1 16 // trigger pin for the 3 Ultrasonic sensors 
+
+/**********************************
+ * DEFINE FIXED VALUES
+***********************************/
+
+#define STEPPER_SPEED -3500
 #define STEPPER_REVOLUTION 1000 
 
-#define STEERING_LIMIT_PIN 11
-#define STEERING_CENTER -7000
-
-#define STEERING_MAX_STEPS 5000
+#define STEERING_CENTER -10000
+#define STEERING_MAX_STEPS 6900
 #define STEERING_MAX_ANGLE 0.698132329
 
-<<<<<<< HEAD
-
-#define max_dur 
-#define min_dur 0
-=======
 // max car speed in m/s
 #define MAX_CAR_SPEED_MS 5
 
->>>>>>> 6f13f5eda7272a70d06e99ee643f5d821302472b
 /**********************************
- * DEFINE DATA TYPES AND STRUCT
+ * DEFINE TYPES AND STRUCTS
 ***********************************/
-
-typedef unsigned int uint16;    // 65,535
-typedef unsigned long uint32;   // 4,294,967,295
 
 typedef enum {
   CALIBRATE_INTERRUPT = 1,
@@ -111,4 +112,6 @@ void steering_calibration();
 void steering_limit_interrupt();
 
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackermann_variable);
+void horn_callback(const std_msgs::UInt8& horn_bool);
+
 #endif

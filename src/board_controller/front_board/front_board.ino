@@ -4,18 +4,18 @@
 #include <AccelStepper.h>
 #include <ros.h>
 #include <ackermann_msgs/AckermannDrive.h>
+#include <std_msgs/UInt8.h>
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
 
-uint16 pedal;
-uint32 displacement;
-uint32 speed;
-uint16 screen_duration ;
+uint16_t pedal;
+uint16_t speed;
+uint32_t distance;
 
+uint8_t I2C_B1, I2C_B2;
 
-byte I2C_B1, I2C_B2;
-
+bool HORN_ROS = 0;
 bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
@@ -26,8 +26,21 @@ bool CALIB_SW, CALIB_FLAG, CALIBRATION_MODE;
 bool AUTO_SW, AUTO_FLAG, AUTONOMOUS_MODE;
 bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 
-uint32 current_millis;
-uint32 previous_millis = 0;
+uint32_t current_millis;
+uint32_t previous_millis = 0;
+
+unsigned long ros_previous_millis = 0;
+const long ros_interval = 3;
+
+
+int sensorValue_R = 0;    // variable to store the value coming from the sensor
+int sensorValue_F = 0;    // variable to store the value coming from the sensor
+int sensorValue_L = 0;    // variable to store the value coming from the sensor
+
+unsigned int DistanceMeasured_R = 0;
+unsigned int DistanceMeasured_F = 0;
+unsigned int DistanceMeasured_L = 0;
+
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
@@ -35,11 +48,16 @@ bool CALIBRATE_INTERRUPT_FLAG = LOW;
 bool LIMIT_SWITCH_FLAG = LOW;
 CALIBRATION_PHASES calibration_phase;
 
-uint16 throttle_value;
-int angle_value = 0;
+uint16_t throttle_value;
+int16_t angle_value = 0;
+
+std_msgs::UInt8 driving_mode;
+std_msgs::UInt8 horn;
 
 ros::NodeHandle node_handle;
 ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
+ros::Subscriber<std_msgs::UInt8> horn_subscriber("/horn", &horn_callback);
+ros::Publisher driving_mode_publisher("/driving_mode", &driving_mode);
 
 void setup() {
   can_msg_send.can_id = 0x00;
@@ -60,7 +78,7 @@ void setup() {
   pinMode(RIGHT_WARNING_PIN, OUTPUT);
   pinMode(HEADLIGHTS_PIN, OUTPUT);
   pinMode(STEPPER_ENA_PIN, OUTPUT);
-
+  
 
   // limit swtich pin definition and interrupt setup
   pinMode(STEERING_LIMIT_PIN, INPUT_PULLUP);
@@ -72,18 +90,51 @@ void setup() {
   // setup rosserial
   node_handle.initNode();
   node_handle.subscribe(ackermann_subscriber);
+  node_handle.subscribe(horn_subscriber);
+  node_handle.advertise(driving_mode_publisher);
+
+
+
+  // ULTRASONIC
+  pinMode(URTRIG_1, OUTPUT);                   // A low pull on pin COMP/TRIG_1
+  digitalWrite(URTRIG_1, HIGH);                // Set to HIGH
+  delay(500);  // For init the sensor 
 }
 
 void loop() {
+  
+  // Ultrasonic
+  digitalWrite(URTRIG_1, LOW);
+  digitalWrite(URTRIG_1, HIGH);
+  
+  sensorValue_R = analogRead(sensorPin_1);
+  sensorValue_R = sensorValue_R * 1.1; //  (sensorValue * 5000 / 1024 ) / 4.125 = sensorValue * 1.1 , calculate the voltage value ADC collected and divide it by 4.125mV /cm.
+  Serial.print("Distance_R=");
+  Serial.print(sensorValue_R);
+  Serial.println("cm");
+
+  
+  sensorValue_F = analogRead(sensorPin_2);
+  sensorValue_F = sensorValue_F * 1.1; //  (sensorValue * 5000 / 1024 ) / 4.125 = sensorValue * 1.1 , calculate the voltage value ADC collected and divide it by 4.125mV /cm.
+  Serial.print("Distance_F=");
+  Serial.print(sensorValue_F);
+  Serial.println("cm");  
+
+    
+  sensorValue_L = analogRead(sensorPin_3);
+  sensorValue_L = sensorValue_L * 1.1; //  (sensorValue * 5000 / 1024 ) / 4.125 = sensorValue * 1.1 , calculate the voltage value ADC collected and divide it by 4.125mV /cm.
+  Serial.print("Distance_L=");
+  Serial.print(sensorValue_L);
+  Serial.println("cm");
+
+
+  
   if (mcp2515.readMessage(&can_msg_receive) == MCP2515::ERROR_OK) {
-    displacement = ((uint32) can_msg_receive.data[0] & 0xFF) | ((uint32) (can_msg_receive.data[1] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[2] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[3] & 0xFF) << 24);
-    speed = ((uint32) can_msg_receive.data[4] & 0xFF) | ((uint32) (can_msg_receive.data[5] & 0xFF) << 8) | ((uint32) (can_msg_receive.data[6] & 0xFF) << 16) | ((uint32) (can_msg_receive.data[7] & 0xFF) << 24);
+    distance = ((uint32_t) can_msg_receive.data[0] & 0xFF) | ((uint32_t) (can_msg_receive.data[1] & 0xFF) << 8) | ((uint32_t) (can_msg_receive.data[2] & 0xFF) << 16) | ((uint32_t) (can_msg_receive.data[3] & 0xFF) << 24);
+    speed = ((uint16_t) can_msg_receive.data[4] & 0xFF) | ((uint16_t) (can_msg_receive.data[5] & 0xFF) << 8);
   }
   
   current_millis = millis();
-
-  // show speed on the screen
-  screen_duration = map(speed / 100, 0, 18, max_dur,min_dur); 
 
   // specific switches use pull-down logic
   pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
@@ -95,7 +146,7 @@ void loop() {
   pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTONOMOUS_MODE);
   pull_down_switch(&CONS_SW, &CONS_FLAG, &CONST_SPEED_MODE);
 
-  digitalWrite(HORN_PIN, HORN_SW);
+  digitalWrite(HORN_PIN, HORN_ROS || HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
   // enable switch led for it's relative mode
@@ -119,7 +170,7 @@ void loop() {
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
-    // stop sconstantteering if limits are somehow reached
+    // stop steering if limits are somehow reached
     if (LIMIT_SWITCH_FLAG == HIGH) {
       stepper_controller.stop();
       angle_value = stepper_controller.currentPosition();
@@ -146,17 +197,30 @@ void loop() {
       }
     }
 
-    node_handle.spinOnce();
+    driving_mode.data = 2;
 
   // constant speed mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && CONST_SPEED_MODE) {
     throttle_value = 260;
+    driving_mode.data = 3;
 
   // manual mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
     throttle_value = analogRead(PEDAL_PIN);
+    driving_mode.data = 0;
   }
-  
+
+ 
+  // this code is added because of the buffer size that was modified in ros.h
+  // we create a non-blocking delay to get rid of the mismatch error present in rosserial
+  unsigned long ros_current_millis = millis();
+  if (ros_current_millis - ros_previous_millis >= ros_interval) {
+    ros_previous_millis = ros_current_millis;
+
+    driving_mode_publisher.publish(&driving_mode);
+    node_handle.spinOnce();
+  }
+
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
 
@@ -255,8 +319,11 @@ void warning_led_controller() {
 
 void steering_calibration() {
   if (calibration_phase == CALIBRATE_END) {
+    driving_mode.data = 4;
     return;
   }
+
+  driving_mode.data = 1;
 
   switch(calibration_phase) {
     case (CALIBRATE_INTERRUPT):
@@ -283,7 +350,7 @@ void steering_calibration() {
 
       break;
     default:
-      stepper_controller.setSpeed(STEPPER_SPEED);
+      stepper_controller.setSpeed(-STEPPER_SPEED);
       stepper_controller.runSpeed();
       break;
   }
@@ -298,8 +365,17 @@ void steering_limit_interrupt() {
   LIMIT_SWITCH_FLAG = HIGH;
 }
 
+void horn_callback(const std_msgs::UInt8& horn_bool) {
+  HORN_ROS = horn_bool.data;
+}
+
 void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
-  angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
-  angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
-  throttle_value = map(ackerman_data.speed * 1000, 0, 1000*MAX_CAR_SPEED_MS, 230,1023); // 230-0 : stop the car , 1023 : max speed
+  // prevent any control on vehicle unless autonomous button is pressed
+  if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+    angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+
+    // car movement min value 230, max value 1024
+    throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+  }
 }
