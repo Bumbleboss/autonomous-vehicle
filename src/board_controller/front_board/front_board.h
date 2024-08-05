@@ -50,9 +50,15 @@
 #define STEERING_MAX_STEPS 5000
 #define STEERING_MAX_ANGLE 0.698132329
 
+<<<<<<< HEAD
 
 #define max_dur 
 #define min_dur 0
+=======
+// max car speed in m/s
+#define MAX_CAR_SPEED_MS 5
+
+>>>>>>> 6f13f5eda7272a70d06e99ee643f5d821302472b
 /**********************************
  * DEFINE DATA TYPES AND STRUCT
 ***********************************/
