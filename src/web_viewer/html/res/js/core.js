@@ -14,6 +14,7 @@ const camera_toggle_elm = document.getElementById('camera_toggle');
 
 // goal elements
 const goal_elm = document.getElementById('goal');
+const goal_dialog_elm = document.getElementById('goal_dialog');
 
 // indicator elements
 const calibrate_elm = document.getElementById('calibrate');
@@ -103,11 +104,28 @@ camera_elm.addEventListener('click', () => {
 })
 
 goal_elm.addEventListener('click', () => {
-  goal_elm.classList.toggle('active');
-
-  publish_goal(0.0, 60.0, 0.0);
+  goal_dialog_elm.showModal();
 })
 
+goal_dialog_elm.addEventListener('click', (e) => {
+  if (e.target.nodeName === 'DIALOG')
+    goal_dialog_elm.close()
+})
+
+goal_dialog_elm.children[0].addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const btn = e.submitter;
+  if (btn.tagName == 'BUTTON') {
+    goal_dialog_elm.close()
+  } else {
+    x_value = parseFloat(document.getElementById('goal_x').value)
+    y_value = parseFloat(document.getElementById('goal_y').value)
+    o_value = parseFloat(document.getElementById('goal_o').value)
+
+    publish_goal(x_value, y_value, o_value)
+  }
+})
 
 function publish_goal(x, y, z) {
   let current_time = new Date().getTime() / 1000.0;
@@ -133,7 +151,7 @@ function publish_goal(x, y, z) {
           },
           orientation: {
             z: z,
-            w: 1.0
+            w: Math.sqrt(1 - z * z)
           }
         }
       }

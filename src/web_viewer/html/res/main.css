@@ -148,13 +148,13 @@ span {
   width: 70px;
 }
 
-.toggle.inactive {
+.inactive {
   background-color: var(--red);
 }
-.toggle.active {
+.active {
   background-color: var(--green);
 }
-.toggle.pending {
+.pending {
   background-color: var(--yellow);
 }
 
@@ -188,8 +188,60 @@ dialog {
   outline: 0;
   border-radius: var(--border);
   border: none;
+  background-color: var(--black);
+  color: var(--white);
 }
 
 dialog::backdrop {
   background: rgb(0 0 0 / 80%);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+}
+
+form h3 {
+  margin: 0;
+}
+
+label {
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 700;
+  margin: var(--gap) 0 3px;
+}
+
+.btn, input {
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn {
+  color: var(--white);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+input {
+  background-color: var(--gray);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.btns .btn {
+  width: 100%;
 }

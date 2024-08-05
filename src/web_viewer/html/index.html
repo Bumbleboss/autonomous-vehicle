@@ -9,6 +9,25 @@
   <script src="/res/js/roslib.min.js"></script>
 </head>
 <body>
+  <dialog id="goal_dialog">
+    <form>
+      <h3>Set your destination</h3>
+      <label>X-coordinate</label>
+      <input id="goal_x" type="text">
+
+      <label>Y-coordinate</label>
+      <input id="goal_y" type="text">
+
+      <label>Orientation</label>
+      <input id="goal_o" type="text">
+
+      <div class="btns">
+        <input type="submit" class="btn active" value="submit">
+        <button class="btn inactive">cancel</button>
+      </div>
+    </form>
+  </dialog>
+
   <main>
     <section class="grid-left">
       <div id="speed">
@@ -37,9 +56,9 @@
         <span>Camera</span>
       </div>
 
-      <div class="toggle" id="gps">
+      <div class="toggle" id="goal">
         <img src="/res/icons/gps.svg" alt="">
-        <span> Goal</span>
+        <span>Goal</span>
       </div>
 
       <div class="grid-bottom-right">
