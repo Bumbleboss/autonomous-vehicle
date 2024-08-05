@@ -1,6 +1,6 @@
 // ROS instance
 const ros = new ROSLIB.Ros({
-  url: 'ws://10.6.3.26:9090'  // Adjust the WebSocket URL as needed
+  url: 'ws://0.0.0.0:9090'  // Adjust the WebSocket URL as needed
 });
 
 // left side elements
@@ -11,6 +11,9 @@ const connect_elm = document.getElementById('connect');
 // camera elements
 const camera_elm = document.getElementById('camera');
 const camera_toggle_elm = document.getElementById('camera_toggle');
+
+// goal elements
+const goal_elm = document.getElementById('goal');
 
 // indicator elements
 const calibrate_elm = document.getElementById('calibrate');
@@ -98,3 +101,44 @@ camera_elm.addEventListener('click', () => {
   camera_elm.classList.toggle('active');
   camera_toggle_elm.classList.toggle('show');
 })
+
+goal_elm.addEventListener('click', () => {
+  goal_elm.classList.toggle('active');
+
+  publish_goal(0.0, 60.0, 0.0);
+})
+
+
+function publish_goal(x, y, z) {
+  let current_time = new Date().getTime() / 1000.0;
+
+  let secs = Math.floor(current_time);
+  let nsecs = Math.floor((current_time - secs) * 1e9);
+
+  // move_base_goal_message
+  let move_base_goal = new ROSLIB.Message({
+    header: {
+      stamp: { secs, nsecs },
+    },
+    goal: {
+      target_pose: {
+        header: {
+          stamp: { secs, nsecs },
+          frame_id: 'map'
+        },
+        pose: {
+          position: {
+            x: x,
+            y: y,
+          },
+          orientation: {
+            z: z,
+            w: 1.0
+          }
+        }
+      }
+    }
+  });
+
+  goal_publisher.publish(move_base_goal);
+}
