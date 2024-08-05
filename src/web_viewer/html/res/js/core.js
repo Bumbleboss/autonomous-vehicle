@@ -8,11 +8,9 @@ const speed_elm = document.getElementById('speed');
 const drive_elm = document.getElementById('mode');
 const connect_elm = document.getElementById('connect');
 
-// clickable elements
+// camera elements
 const camera_elm = document.getElementById('camera');
-
-// dialogs
-const camera_dialog_elm = document.getElementById('camera_dialog');
+const camera_toggle_elm = document.getElementById('camera_toggle');
 
 // indicator elements
 const calibrate_elm = document.getElementById('calibrate');
@@ -34,17 +32,6 @@ ros.on('close', () => {
   connect_elm.classList.remove('active');
 });
 
-
-// dialog opener camera
-camera_elm.addEventListener('click', () => {
-  camera_dialog_elm.showModal();
-})
-
-camera_dialog_elm.addEventListener('click', (e) => {
-  if (e.target.nodeName === 'DIALOG')
-  camera_dialog_elm.close()
-})
-
 // driving mode and calibration subscriber
 const driving_listener = new ROSLIB.Topic({
   ros: ros,
@@ -58,11 +45,16 @@ const odom_listener = new ROSLIB.Topic({
   messageType: 'nav_msgs/Odometry'
 });
 
-
 const obj_listener = new ROSLIB.Topic({
   ros: ros,
   name: '/zed2/zed_node/obj_det/objects',
   messageType: 'zed_interfaces/ObjectsStamped'
+});
+
+const goal_publisher = new ROSLIB.Topic({
+  ros: ros,
+  name: '/move_base/goal',
+  messageType: 'move_base_msgs/MoveBaseActionGoal'
 });
 
 // driving modes
@@ -89,12 +81,20 @@ driving_listener.subscribe((msg) => {
   }
 });
 
+// update vehicle speed
 odom_listener.subscribe((msg) => {
   let vel = msg.twist.twist.linear.z;
   speed_elm.children[0].innerText = `${vel} m/s`
 })
 
+// update detected objects text
 obj_listener.subscribe((msg) => {
   let objs = msg.objects.length;
   objs_elm.children[0].innerText = objs
+})
+
+// toggle camera views
+camera_elm.addEventListener('click', () => {
+  camera_elm.classList.toggle('active');
+  camera_toggle_elm.classList.toggle('show');
 })

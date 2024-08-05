@@ -93,16 +93,34 @@ span {
 
 .grid-right {
   position: relative;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
 .grid-right iframe {
-  position: absolute;
-  top: 0;
+  grid-row: 1 / 3;
+  grid-column: 1 / 3;
+  height: 100%;
+  width: 100%;
+  outline: none;
+  border: 0;
+  border-radius: var(--border);
+}
+.grid-right img {
   width: 100%;
   height: 100%;
-  outline: 0;
-  border: none;
+  object-fit: cover;
+  display: none;
   border-radius: var(--border);
+}
+
+#camera_toggle.show iframe {
+  grid-column: 1 / 2;
+}
+#camera_toggle.show img {
+  display: initial;
 }
 
 .grid-bottom {
@@ -168,14 +186,10 @@ span {
 dialog {
   padding: 0;
   outline: 0;
-  border-radius: 12px;
+  border-radius: var(--border);
   border: none;
 }
 
 dialog::backdrop {
   background: rgb(0 0 0 / 80%);
-}
-
-#camera_dialog img {
-  min-height: 80vh;
 }
