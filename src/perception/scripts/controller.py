@@ -15,13 +15,6 @@ def ackermann_callback(msg: AckermannDrive, cmd_pub):
 
     if stop_car:
         msg.speed = 0.0
-    
-    # if not stop_car:
-    #     if msg.speed != 0.0:
-    #         previous_speed = msg.speed
-
-    #     elif msg.speed == 0.0 and previous_speed not None:
-    #         msg.speed = previous_speed
 
     cmd_pub.publish(msg)
 
@@ -47,7 +40,7 @@ def ackermann_controller():
     cmd_pub = rospy.Publisher('/ackermann_cmd', AckermannDrive, queue_size=10)
 
     rospy.Subscriber('/ackermann_controller', AckermannDrive, ackermann_callback, cmd_pub)
-    rospy.Subscriber('zed2/zed_node/obj_det/objects', ObjectsStamped, objects_callback)
+    rospy.Subscriber('/zed2/zed_node/obj_det/objects', ObjectsStamped, objects_callback)
 
     rospy.spin()
 

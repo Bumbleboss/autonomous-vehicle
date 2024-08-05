@@ -297,5 +297,5 @@ void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
   angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
 
   // car movement min value 230, max value 1024
-  throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+  throttle_value = map(ackerman_data.speed * 750, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
 }
