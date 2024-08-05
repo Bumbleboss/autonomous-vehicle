@@ -11,6 +11,8 @@ MCP2515 mcp2515(CAN_PIN);
 uint16 pedal;
 uint32 displacement;
 uint32 speed;
+uint16 screen_duration ;
+
 
 byte I2C_B1, I2C_B2;
 
@@ -59,6 +61,7 @@ void setup() {
   pinMode(HEADLIGHTS_PIN, OUTPUT);
   pinMode(STEPPER_ENA_PIN, OUTPUT);
 
+
   // limit swtich pin definition and interrupt setup
   pinMode(STEERING_LIMIT_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(STEERING_LIMIT_PIN), steering_limit_interrupt, FALLING);
@@ -78,6 +81,9 @@ void loop() {
   }
   
   current_millis = millis();
+
+  // show speed on the screen
+  screen_duration = map(speed / 100, 0, 18, max_dur,min_dur); 
 
   // specific switches use pull-down logic
   pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);

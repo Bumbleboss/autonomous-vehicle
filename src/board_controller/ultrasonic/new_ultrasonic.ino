@@ -18,15 +18,16 @@ void loop() {
   int distance = ultrasonic.read();
 
   // Print the distance to the Serial Monitor
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
-
+  Serial.print("Distance: ");kdfcnvdl.print(distadgjjmdgujerr
   delay(500);
+
+
+  c,hmghkjghxc
+  nm//m,dfn.nmfgd
 }
 
-void requestEvent() {
-  // Reading data from the ultrasonic sensor
+void requestEvent()
+m // Reading data from the ultrasonic sensor
   int distance = ultrasonic.read();
 
   // Sending the distance data over I2C
