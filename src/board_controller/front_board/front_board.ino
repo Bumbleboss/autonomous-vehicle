@@ -4,6 +4,7 @@
 #include <AccelStepper.h>
 #include <ros.h>
 #include <ackermann_msgs/AckermannDrive.h>
+#include <std_msgs/UInt8.h>
 #include "front_board.h"
 
 MCP2515 mcp2515(CAN_PIN);
@@ -14,6 +15,7 @@ uint32_t distance;
 
 uint8_t I2C_B1, I2C_B2;
 
+bool HORN_ROS = 0;
 bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
@@ -27,6 +29,9 @@ bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 uint32_t current_millis;
 uint32_t previous_millis = 0;
 
+unsigned long ros_previous_millis = 0;
+const long ros_interval = 3;
+
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
 bool CALIBRATE_INTERRUPT_FLAG = LOW;
@@ -36,8 +41,13 @@ CALIBRATION_PHASES calibration_phase;
 uint16_t throttle_value;
 int16_t angle_value = 0;
 
+std_msgs::UInt8 driving_mode;
+std_msgs::UInt8 horn;
+
 ros::NodeHandle node_handle;
 ros::Subscriber<ackermann_msgs::AckermannDrive> ackermann_subscriber("/ackermann_cmd", &ackerman_callback);
+ros::Subscriber<std_msgs::UInt8> horn_subscriber("/horn", &horn_callback);
+ros::Publisher driving_mode_publisher("/driving_mode", &driving_mode);
 
 void setup() {
   can_msg_send.can_id = 0x00;
@@ -69,6 +79,8 @@ void setup() {
   // setup rosserial
   node_handle.initNode();
   node_handle.subscribe(ackermann_subscriber);
+  node_handle.subscribe(horn_subscriber);
+  node_handle.advertise(driving_mode_publisher);
 }
 
 void loop() {
@@ -89,7 +101,7 @@ void loop() {
   pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTONOMOUS_MODE);
   pull_down_switch(&CONS_SW, &CONS_FLAG, &CONST_SPEED_MODE);
 
-  digitalWrite(HORN_PIN, HORN_SW);
+  digitalWrite(HORN_PIN, HORN_ROS || HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
 
   // enable switch led for it's relative mode
@@ -113,7 +125,7 @@ void loop() {
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
-    // stop sconstantteering if limits are somehow reached
+    // stop steering if limits are somehow reached
     if (LIMIT_SWITCH_FLAG == HIGH) {
       stepper_controller.stop();
       angle_value = stepper_controller.currentPosition();
@@ -140,17 +152,30 @@ void loop() {
       }
     }
 
-    node_handle.spinOnce();
+    driving_mode.data = 2;
 
   // constant speed mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && CONST_SPEED_MODE) {
     throttle_value = 260;
+    driving_mode.data = 3;
 
   // manual mode active
   } else if (!CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
     throttle_value = analogRead(PEDAL_PIN);
+    driving_mode.data = 0;
   }
-  
+
+ 
+  // this code is added because of the buffer size that was modified in ros.h
+  // we create a non-blocking delay to get rid of the mismatch error present in rosserial
+  unsigned long ros_current_millis = millis();
+  if (ros_current_millis - ros_previous_millis >= ros_interval) {
+    ros_previous_millis = ros_current_millis;
+
+    driving_mode_publisher.publish(&driving_mode);
+    node_handle.spinOnce();
+  }
+
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
 
@@ -249,8 +274,11 @@ void warning_led_controller() {
 
 void steering_calibration() {
   if (calibration_phase == CALIBRATE_END) {
+    driving_mode.data = 4;
     return;
   }
+
+  driving_mode.data = 1;
 
   switch(calibration_phase) {
     case (CALIBRATE_INTERRUPT):
@@ -277,7 +305,7 @@ void steering_calibration() {
 
       break;
     default:
-      stepper_controller.setSpeed(STEPPER_SPEED);
+      stepper_controller.setSpeed(-STEPPER_SPEED);
       stepper_controller.runSpeed();
       break;
   }
@@ -292,10 +320,23 @@ void steering_limit_interrupt() {
   LIMIT_SWITCH_FLAG = HIGH;
 }
 
-void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
-  angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
-  angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+void horn_callback(const std_msgs::UInt8& horn_bool) {
+  HORN_ROS = horn_bool.data;
+}
 
+void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
+  // prevent any control on vehicle unless autonomous button is pressed
+  if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
+    angle_value = map(ackerman_data.steering_angle * 100, STEERING_MAX_ANGLE * -100, STEERING_MAX_ANGLE * 100, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+    angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
+
+<<<<<<< HEAD
   // car movement min value 230, max value 1024
   throttle_value = map(ackerman_data.speed * 750, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
 }
+=======
+    // car movement min value 230, max value 1024
+    throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+  }
+}
+>>>>>>> 216c6a20f3d57dd39f426902c4595be3170152d5

@@ -52,7 +52,7 @@ To accomplish the same task, the following must be done.
 After completing the above steps, interfacing with front board should be seamless. 
 
 ```bash
-rosrun rosserial_python serial_node.py /dev/ttyUSB0 _buad:=115200
+rosrun rosserial_python serial_node.py /dev/ttyUSB0 _baud:=115200
 ```
 
 Dont forget to change port if the above isn't working!
