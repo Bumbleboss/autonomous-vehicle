@@ -1,0 +1,12 @@
+<launch>
+  <!-- run ros bridge -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+
+  <!-- video web server -->
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen">
+    <param name="port" value="6563"/>
+  </node>
+
+  <!-- start web server -->
+  <node name="http_server" pkg="web_viewer" type="server.py" output="screen" />
+</launch>
