@@ -15,7 +15,6 @@ uint32_t distance;
 
 uint8_t I2C_B1, I2C_B2;
 
-
 bool HORN_ROS = 0;
 bool HORN_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
@@ -29,6 +28,9 @@ bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 
 uint32_t current_millis;
 uint32_t previous_millis = 0;
+
+unsigned long ros_previous_millis = 0;
+const long ros_interval = 3;
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
@@ -120,7 +122,6 @@ void loop() {
   // calibration mode active
   if (CALIBRATION_MODE && !AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
     steering_calibration();
-    driving_mode.data = 1;
   
   // autonomous mode active
   } else if (!CALIBRATION_MODE && AUTONOMOUS_MODE && !CONST_SPEED_MODE) {
@@ -163,13 +164,17 @@ void loop() {
     throttle_value = analogRead(PEDAL_PIN);
     driving_mode.data = 0;
   }
-  
-  // publish current driving mode of the vehicle
-  driving_mode_publisher.publish(&driving_mode);
-  node_handle.spinOnce();
 
-  // do not remove otherwise an error will appear in rosserial
-  delay(3);
+ 
+  // this code is added because of the buffer size that was modified in ros.h
+  // we create a non-blocking delay to get rid of the mismatch error present in rosserial
+  unsigned long ros_current_millis = millis();
+  if (ros_current_millis - ros_previous_millis >= ros_interval) {
+    ros_previous_millis = ros_current_millis;
+
+    driving_mode_publisher.publish(&driving_mode);
+    node_handle.spinOnce();
+  }
 
   can_msg_send.data[0] = (throttle_value >> 0) & 0xFF;
   can_msg_send.data[1] = (throttle_value >> 8) & 0xFF;
@@ -269,8 +274,11 @@ void warning_led_controller() {
 
 void steering_calibration() {
   if (calibration_phase == CALIBRATE_END) {
+    driving_mode.data = 4;
     return;
   }
+
+  driving_mode.data = 1;
 
   switch(calibration_phase) {
     case (CALIBRATE_INTERRUPT):

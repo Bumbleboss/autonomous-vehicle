@@ -9,6 +9,25 @@
   <script src="/res/js/roslib.min.js"></script>
 </head>
 <body>
+  <dialog id="goal_dialog">
+    <form>
+      <h3>Set your destination</h3>
+      <label>X-coordinate</label>
+      <input id="goal_x" type="text">
+
+      <label>Y-coordinate</label>
+      <input id="goal_y" type="text">
+
+      <label>Orientation</label>
+      <input id="goal_o" type="text">
+
+      <div class="btns">
+        <input type="submit" class="btn active" value="submit">
+        <button class="btn inactive">cancel</button>
+      </div>
+    </form>
+  </dialog>
+
   <main>
     <section class="grid-left">
       <div id="speed">
@@ -25,8 +44,10 @@
       </div>
     </section>
 
-    <section class="grid-right">
+    <section class="grid-right" id="camera_toggle">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3450.325297796719!2d31.715982176281454!3d30.142114374874573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1457f74d392da177%3A0xe75607bddf15ae1b!2sEgyptian-Russian%20University!5e0!3m2!1sen!2seg!4v1717829063499!5m2!1sen!2seg" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <img src="//0.0.0.0:6563/stream?topic=/image" />
+      <img src="//0.0.0.0:6563/stream?topic=/image" />
     </section>
 
     <section class="grid-bottom">
@@ -35,18 +56,18 @@
         <span>Camera</span>
       </div>
 
-      <div class="toggle" id="gps">
+      <div class="toggle" id="goal">
         <img src="/res/icons/gps.svg" alt="">
-        <span> Goal</span>
+        <span>Goal</span>
       </div>
 
       <div class="grid-bottom-right">
-        <div class="toggle horizontal active" id="calibrate">
+        <div class="toggle horizontal inactive" id="calibrate">
           <img src="/res/icons/calibrate.svg" alt="">
           <span>Calibration</span>
         </div>
         
-        <div class="toggle horizontal active" id="connect">
+        <div class="toggle horizontal inactive" id="connect">
           <img src="/res/icons/connect.svg" alt="">
           <span>Connection</span>
         </div>

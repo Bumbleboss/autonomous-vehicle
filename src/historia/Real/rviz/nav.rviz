@@ -26,7 +26,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -244,8 +244,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.450000047683716
-        Min Value: 0.05000000074505806
+        Max Value: 2.950000047683716
+        Min Value: 0.30000001192092896
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -264,7 +264,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Points
-      Topic: /move_base/global_costmap/rgbd_obstacle_layer/voxel_grid
+      Topic: /move_base/local_costmap/rgbd_obstacle_layer/voxel_grid
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -327,9 +327,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.43039870262145996
+      Pitch: 0.6497967839241028
       Target Frame: <Fixed Frame>
-      Yaw: 3.228553056716919
+      Yaw: 3.333554983139038
     Saved: ~
 Window Geometry:
   Displays:
@@ -348,4 +348,4 @@ Window Geometry:
     collapsed: true
   Width: 1048
   X: 100
-  Y: 108
+  Y: 34

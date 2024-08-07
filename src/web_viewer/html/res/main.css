@@ -93,16 +93,34 @@ span {
 
 .grid-right {
   position: relative;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
 .grid-right iframe {
-  position: absolute;
-  top: 0;
+  grid-row: 1 / 3;
+  grid-column: 1 / 3;
+  height: 100%;
+  width: 100%;
+  outline: none;
+  border: 0;
+  border-radius: var(--border);
+}
+.grid-right img {
   width: 100%;
   height: 100%;
-  outline: 0;
-  border: none;
+  object-fit: cover;
+  display: none;
   border-radius: var(--border);
+}
+
+#camera_toggle.show iframe {
+  grid-column: 1 / 2;
+}
+#camera_toggle.show img {
+  display: initial;
 }
 
 .grid-bottom {
@@ -130,13 +148,13 @@ span {
   width: 70px;
 }
 
-.toggle.inactive {
+.inactive {
   background-color: var(--red);
 }
-.toggle.active {
+.active {
   background-color: var(--green);
 }
-.toggle.pending {
+.pending {
   background-color: var(--yellow);
 }
 
@@ -163,4 +181,67 @@ span {
 
 .grid-bottom-right div:last-child span {
   font-size: 50px;
+}
+
+dialog {
+  padding: 0;
+  outline: 0;
+  border-radius: var(--border);
+  border: none;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 80%);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+}
+
+form h3 {
+  margin: 0;
+}
+
+label {
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 700;
+  margin: var(--gap) 0 3px;
+}
+
+.btn, input {
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn {
+  color: var(--white);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+input {
+  background-color: var(--gray);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.btns .btn {
+  width: 100%;
 }
