@@ -53,7 +53,7 @@ if __name__ == '__main__':
     rospy.init_node('cmd_vel_to_ackermann_drive')
         
     twist_cmd_topic = rospy.get_param('~twist_cmd_topic', '/cmd_vel') 
-    ackermann_cmd_topic = rospy.get_param('~ackermann_cmd_topic', '/ackermann_cmd')
+    ackermann_cmd_topic = rospy.get_param('~ackermann_cmd_topic', '/priority_control')
     wheelbase = rospy.get_param('~wheelbase', 2.1)
     frame_id = rospy.get_param('~frame_id', 'odom')
     message_type = rospy.get_param('~message_type', 'ackermann_drive') # ackermann_drive or ackermann_drive_stamped

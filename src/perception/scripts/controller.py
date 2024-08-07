@@ -63,7 +63,7 @@ def ackermann_controller():
   cmd_pub = rospy.Publisher('/ackermann_cmd', AckermannDrive, queue_size=10)
   horn_pub = rospy.Publisher('/horn', UInt8, queue_size=10)
 
-  rospy.Subscriber('/ackermann_controller', AckermannDrive, ackermann_callback, cmd_pub)
+  rospy.Subscriber('/priority_control', AckermannDrive, ackermann_callback, cmd_pub)
   rospy.Subscriber('/zed2/zed_node/obj_det/objects', ObjectsStamped, objects_callback, horn_pub)
 
   rospy.spin()
