@@ -35,6 +35,8 @@
 #define CONS_LED 15
 #define CONS_I2C 3
 
+// BRAKING SW
+#define BRAKING_I2C 1
 
 // stepper motor (steering) config
 #define STEPPER_PIN 14

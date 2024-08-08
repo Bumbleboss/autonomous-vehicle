@@ -17,6 +17,7 @@ uint8_t I2C_B1, I2C_B2;
 
 bool HORN_ROS = 0;
 bool HORN_SW;
+bool BRAKING_SW;
 bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
 bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
 bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
@@ -54,7 +55,7 @@ void setup() {
   can_msg_send.can_dlc = 3;
   can_msg_send.data[0] = 0x00; // throttle
   can_msg_send.data[1] = 0x00; // throttle
-  can_msg_send.data[2] = 0x00; // bulbs
+  can_msg_send.data[2] = 0x00; // bulbs + Braking_SW
 
   Wire.begin(8); // join I2C bus with address #8
   Wire.onReceive(I2C_Read); // register event
@@ -116,6 +117,10 @@ void loop() {
     digitalWrite(STEPPER_ENA_PIN, 1);
   }
 
+
+  // braking switch  
+  bitWrite(can_msg_send.data[2], 2, BRAKING_SW);
+  
   warning_led_controller();
 
   // driving modes: calibration, autonomous, const speed
@@ -165,6 +170,9 @@ void loop() {
     driving_mode.data = 0;
   }
 
+
+  
+
  
   // this code is added because of the buffer size that was modified in ros.h
   // we create a non-blocking delay to get rid of the mismatch error present in rosserial
@@ -193,10 +201,15 @@ void I2C_Read(int how_many) {
   RIGHT_WARNING_SW  = bitRead(I2C_B1, RIGHT_WARNING_I2C);
   HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
 
+  // braking switch 
+  BRAKING_SW        = bitRead(I2C_B1, BRAKING_I2C);
+
   // right board switches
   AUTO_SW           = bitRead(I2C_B2, AUTO_I2C);
   CALIB_SW          = bitRead(I2C_B2, CALIB_I2C);
   CONS_SW           = bitRead(I2C_B2, CONS_I2C);
+
+
 }
 
 void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
@@ -226,6 +239,8 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
     *SW_FLAG = HIGH;
   }
 }
+
+
 
 void warning_led_controller() {
   // both left and right leds will be off
@@ -331,6 +346,6 @@ void ackerman_callback(const ackermann_msgs::AckermannDrive& ackerman_data) {
     angle_value = constrain(angle_value, -1 * STEERING_MAX_STEPS, STEERING_MAX_STEPS);
 
     // car movement min value 230, max value 1024
-    throttle_value = map(ackerman_data.speed * 500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
+    throttle_value = map(ackerman_data.speed * 1500, 0, 1000 * MAX_CAR_SPEED_MS, 230, 1024);
   }
 }
