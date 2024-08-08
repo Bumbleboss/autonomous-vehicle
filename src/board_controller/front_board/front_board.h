@@ -41,7 +41,7 @@
 // stepper motor (steering) config
 #define STEPPER_PIN 14
 #define STEPPER_DIR_PIN 13
-#define STEPPER_ENA_PIN 12
+#define STEPPER_ENA_PIN A1
 #define STEERING_LIMIT_PIN 11
 
 /**********************************

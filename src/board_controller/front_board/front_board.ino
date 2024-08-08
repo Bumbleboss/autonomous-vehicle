@@ -112,9 +112,9 @@ void loop() {
 
   // disable stepper's holding torque when its not in calibration nor autonomous mode
   if (CALIBRATION_MODE || AUTONOMOUS_MODE) {
-    digitalWrite(STEPPER_ENA_PIN, 0);
+    digitalWrite(STEPPER_ENA_PIN, LOW);
   } else {
-    digitalWrite(STEPPER_ENA_PIN, 1);
+    digitalWrite(STEPPER_ENA_PIN, HIGH);
   }
 
 
@@ -169,10 +169,6 @@ void loop() {
     throttle_value = analogRead(PEDAL_PIN);
     driving_mode.data = 0;
   }
-
-
-  
-
  
   // this code is added because of the buffer size that was modified in ros.h
   // we create a non-blocking delay to get rid of the mismatch error present in rosserial
@@ -208,8 +204,6 @@ void I2C_Read(int how_many) {
   AUTO_SW           = bitRead(I2C_B2, AUTO_I2C);
   CALIB_SW          = bitRead(I2C_B2, CALIB_I2C);
   CONS_SW           = bitRead(I2C_B2, CONS_I2C);
-
-
 }
 
 void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
@@ -239,8 +233,6 @@ void pull_down_switch(bool *SW_INPUT, bool *SW_FLAG, bool *SW_VALUE) {
     *SW_FLAG = HIGH;
   }
 }
-
-
 
 void warning_led_controller() {
   // both left and right leds will be off
