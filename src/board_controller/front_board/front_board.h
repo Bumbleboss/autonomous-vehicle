@@ -57,6 +57,7 @@
 
 // max car speed in m/s
 #define MAX_CAR_SPEED_MS 5
+#define ROS_INTERVAL 3
 
 /**********************************
  * DEFINE TYPES AND STRUCTS

@@ -15,13 +15,14 @@ uint32_t distance;
 
 uint8_t I2C_B1, I2C_B2;
 
+bool BRAKING_SW;
+bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
+bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
+bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
+bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
+
 bool HORN_ROS = 0;
 bool HORN_SW;
-bool BRAKING_SW;
-bool WARNING_SW, WARNING_FLAG, WARNING_VAL;
-bool LEFT_WARNING_SW, LEFT_WARNING_FLAG, LEFT_WARNING_VAL;
-bool RIGHT_WARNING_SW, RIGHT_WARNING_FLAG, RIGHT_WARNING_VAL;
-bool HEADLIGHTS_SW, HEADLIGHTS_FLAG, HEADLIGHTS_VAL;
 
 bool CALIB_SW, CALIB_FLAG, CALIBRATION_MODE;
 bool AUTO_SW, AUTO_FLAG, AUTONOMOUS_MODE;
@@ -30,8 +31,7 @@ bool CONS_SW, CONS_FLAG, CONST_SPEED_MODE;
 uint32_t current_millis;
 uint32_t previous_millis = 0;
 
-unsigned long ros_previous_millis = 0;
-const long ros_interval = 3;
+uint32_t ros_previous_millis = 0;
 
 AccelStepper stepper_controller(1, STEPPER_PIN, STEPPER_DIR_PIN);
 
@@ -58,16 +58,16 @@ void setup() {
   can_msg_send.data[2] = 0x00; // bulbs + Braking_SW
 
   Wire.begin(8); // join I2C bus with address #8
-  Wire.onReceive(I2C_Read); // register event
+  Wire.onReceive(I2C_read); // register event
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS);
   mcp2515.setNormalMode();
 
-  pinMode(HORN_PIN, OUTPUT);
-  pinMode(LEFT_WARNING_PIN, OUTPUT);
   pinMode(RIGHT_WARNING_PIN, OUTPUT);
+  pinMode(LEFT_WARNING_PIN, OUTPUT);
   pinMode(HEADLIGHTS_PIN, OUTPUT);
+  pinMode(HORN_PIN, OUTPUT);
   pinMode(STEPPER_ENA_PIN, OUTPUT);
 
   // limit swtich pin definition and interrupt setup
@@ -93,17 +93,17 @@ void loop() {
   current_millis = millis();
 
   // specific switches use pull-down logic
-  pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
-  pull_down_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
   pull_down_switch(&RIGHT_WARNING_SW, &RIGHT_WARNING_FLAG, &RIGHT_WARNING_VAL);
+  pull_down_switch(&LEFT_WARNING_SW, &LEFT_WARNING_FLAG, &LEFT_WARNING_VAL);
+  pull_down_switch(&WARNING_SW, &WARNING_FLAG, &WARNING_VAL);
   pull_down_switch(&HEADLIGHTS_SW, &HEADLIGHTS_FLAG, &HEADLIGHTS_VAL);
 
   pull_down_switch(&CALIB_SW, &CALIB_FLAG, &CALIBRATION_MODE);
   pull_down_switch(&AUTO_SW, &AUTO_FLAG, &AUTONOMOUS_MODE);
   pull_down_switch(&CONS_SW, &CONS_FLAG, &CONST_SPEED_MODE);
 
-  digitalWrite(HORN_PIN, HORN_ROS || HORN_SW);
   digitalWrite(HEADLIGHTS_PIN, HEADLIGHTS_VAL);
+  digitalWrite(HORN_PIN, HORN_ROS || HORN_SW);
 
   // enable switch led for it's relative mode
   digitalWrite(CALIB_LED, CALIBRATION_MODE);
@@ -117,10 +117,8 @@ void loop() {
     digitalWrite(STEPPER_ENA_PIN, HIGH);
   }
 
-
   // braking switch  
   bitWrite(can_msg_send.data[2], 2, BRAKING_SW);
-  
   warning_led_controller();
 
   // driving modes: calibration, autonomous, const speed
@@ -173,7 +171,7 @@ void loop() {
   // this code is added because of the buffer size that was modified in ros.h
   // we create a non-blocking delay to get rid of the mismatch error present in rosserial
   unsigned long ros_current_millis = millis();
-  if (ros_current_millis - ros_previous_millis >= ros_interval) {
+  if (ros_current_millis - ros_previous_millis >= ROS_INTERVAL) {
     ros_previous_millis = ros_current_millis;
 
     driving_mode_publisher.publish(&driving_mode);
@@ -186,19 +184,17 @@ void loop() {
   mcp2515.sendMessage(&can_msg_send);
 }
 
-void I2C_Read(int how_many) {
+void I2C_read(int num) {
   I2C_B1 = Wire.read();
   I2C_B2 = Wire.read();
 
   // left board switches
-  HORN_SW           = bitRead(I2C_B1, HORN_I2C);
-  WARNING_SW        = bitRead(I2C_B1, WARNING_I2C);
-  LEFT_WARNING_SW   = bitRead(I2C_B1, LEFT_WARNING_I2C);
-  RIGHT_WARNING_SW  = bitRead(I2C_B1, RIGHT_WARNING_I2C);
-  HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
-
-  // braking switch 
   BRAKING_SW        = bitRead(I2C_B1, BRAKING_I2C);
+  RIGHT_WARNING_SW  = bitRead(I2C_B1, RIGHT_WARNING_I2C);
+  LEFT_WARNING_SW   = bitRead(I2C_B1, LEFT_WARNING_I2C);
+  WARNING_SW        = bitRead(I2C_B1, WARNING_I2C);
+  HEADLIGHTS_SW     = bitRead(I2C_B1, HEADLIGHTS_I2C);
+  HORN_SW           = bitRead(I2C_B1, HORN_I2C);
 
   // right board switches
   AUTO_SW           = bitRead(I2C_B2, AUTO_I2C);
