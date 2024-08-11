@@ -1,6 +1,11 @@
+const url = {
+  address: '192.168.43.15',
+  port: 9090
+}
+
 // ROS instance
 const ros = new ROSLIB.Ros({
-  url: 'ws://0.0.0.0:9090'  // Adjust the WebSocket URL as needed
+  url: `ws://${url.address}:${url.port}`
 });
 
 // left side elements

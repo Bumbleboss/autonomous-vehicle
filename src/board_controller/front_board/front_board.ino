@@ -39,7 +39,7 @@ bool CALIBRATE_INTERRUPT_FLAG = LOW;
 bool LIMIT_SWITCH_FLAG = LOW;
 CALIBRATION_PHASES calibration_phase;
 
-uint16_t throttle_value;
+uint16_t throttle_value = 0;
 int16_t angle_value = 0;
 
 std_msgs::UInt8 driving_mode;
