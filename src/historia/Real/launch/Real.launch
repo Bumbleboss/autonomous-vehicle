@@ -27,7 +27,12 @@
   <!--Camera-->
   <include file="$(find zed_wrapper)/launch/zed2.launch"/>
 
-  <!--Ai stop-->
+  <!-- AI stop -->
   <node pkg="perception" type="controller.py" name="ackermann_controller" />
 
+  <!-- rosserial -->
+  <node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
+    <param name="port" value="/dev/ttyUSB0"/>
+    <param name="baud" value="115200"/>
+  </node>
 </launch>
