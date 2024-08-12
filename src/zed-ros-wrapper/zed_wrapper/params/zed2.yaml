@@ -24,6 +24,3 @@ mapping:
 
 pos_tracking:
     two_d_mode: true   
-    
-predictions:     
-    object_tracking_enabled: true    
