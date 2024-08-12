@@ -1,6 +1,13 @@
-image: SORA.pgm
+# image: SORA.pgm
+# resolution: 0.050000
+# origin: [-2.000000, -73.5, 0.000000]
+# negate: 0
+# occupied_thresh: 0.65
+# free_thresh: 0.196
+
+image: nile2.pgm
 resolution: 0.050000
-origin: [-2.000000, -73.5, 0.000000]
+origin: [-12.650062, -4.736235, 0.000000]
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.196
