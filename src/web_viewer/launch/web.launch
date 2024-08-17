@@ -1,7 +1,6 @@
 <launch>
-  <arg name="rosbridge_address" default="192.168.43.15" />
+  <arg name="rosbridge_address" default="192.168.80.245" />
   <arg name="rosbridge_port" default="6561" />
-  <arg name="web_video_server_port" default="6562" />
 
   <!-- run ros bridge -->
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
@@ -11,9 +10,9 @@
 
   <!-- video web server -->
   <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen">
-    <arg name="port" value="$(arg web_video_server_port)"/>
+    <param name="port" value="6562"/>
   </node>
 
   <!-- start web server -->
-  <node name="http_server" pkg="web_viewer" type="$(arg http_server)" output="screen" />
+  <node name="http_server" pkg="web_viewer" type="server.py" output="screen" />
 </launch>
