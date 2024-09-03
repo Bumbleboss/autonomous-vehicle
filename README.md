@@ -8,9 +8,9 @@ Our project is about implementing a level-three autonomous functionality on an e
 TBA
 
 ### ZED 2 Camera
-The Project relies heavily on ZED 2 for positional tracking, mapping, and obstacle detection. For that, we need to setup the camera first.
+The project relies heavily on ZED 2 for positional tracking, mapping, and obstacle detection. For that, we need to setup the camera first.
 
-#### Install CUDA Toolkit (Rrquires Nvidia GPU)
+#### Install CUDA Toolkit (Requires Nvidia GPU)
 - Check your supported CUDA version by typing `nvidia-smi` in terminal.
 - Find the matching version from [archive](https://developer.nvidia.com/cuda-toolkit-archive) and install.
 - We use Ubuntu 20.04, hence the choice would be <br/> `Linux > x86_64 > Ubuntu > 20.04 > runfile (local)`
@@ -27,4 +27,3 @@ The Project relies heavily on ZED 2 for positional tracking, mapping, and obstac
 - Download **ZED 4.1** SDK for Ubuntu 20 from [here](https://www.stereolabs.com/developers/release).
 - Convert file to be executable then run.
 - Accept license and proceed to type `y` for all dialogues besides the one that requires optimization of AI models (last dialogue).
-
